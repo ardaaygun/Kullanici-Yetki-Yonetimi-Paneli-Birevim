@@ -1,0 +1,121 @@
+﻿<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- FORM: GİRİŞ YAP -->
+        <div id="loginForm" class="form-step">
+            <h2 class="form-title">Giriş Yap</h2>
+            <form asp-action="Login" method="post">
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" class="form-control" name="Email" placeholder="E-posta adresiniz" required />
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" class="form-control" name="Password" placeholder="Şifreniz" required />
+                </div>
+                <button type="submit" class="btn-primary-custom">Giriş Yap</button>
+            </form>
+        </div>
+
+        <!-- ANA SAYFAYA YÖNLENDİREN HESAP OLUŞTUR LINKI -->
+        <div class="toggle-container">
+            <a asp-controller="Home" asp-action="Index" class="btn-toggle-custom">
+                Hesap Oluştur
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- CSS TASARIMI (Aynen Kalıyor) -->
+<style>
+    .login-wrapper {
+        display: flex;
+        align-items: center;
+        min-height: 80vh;
+        padding-left: 5%;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        background: rgba(0, 0, 0, 0.45);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        backdrop-filter: blur(8px);
+        color: #fff;
+    }
+
+    .form-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #ddd;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        box-sizing: border-box;
+    }
+
+    .btn-primary-custom {
+        width: 100%;
+        padding: 12px;
+        background-color: #0066ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.3s;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: #0052cc;
+        }
+
+    .toggle-container {
+        margin-top: 20px;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 15px;
+    }
+
+    /* Linkin buton gibi görünmeye devam etmesi için inline-block eklendi */
+    .btn-toggle-custom {
+        display: inline-block;
+        text-decoration: none;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.3s;
+    }
+
+        .btn-toggle-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+</style>
