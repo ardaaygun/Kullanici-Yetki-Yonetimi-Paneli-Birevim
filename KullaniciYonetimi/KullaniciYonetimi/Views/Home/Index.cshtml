@@ -1,8 +1,167 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Hesap Oluştur";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row">
+        <!-- Sol Taraf: Hesap Oluştur Kartı -->
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="glass-register-card p-4 p-lg-5 mt-4">
+
+                <!-- Sadece "Hesap Oluştur" Başlığı -->
+                <div class="text-start mb-4">
+                    <h3 class="fw-bold text-white mb-1">Hesap Oluştur</h3>
+                </div>
+
+                <form id="registerForm" action="/Account/Register" method="post" class="needs-validation" autocomplete="off" novalidate>
+
+                    <!-- Ad & Soyad -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control custom-glass-input"
+                                       id="user_fname"
+                                       name="FirstName"
+                                       placeholder="Ad"
+                                       autocomplete="new-password"
+                                       required>
+                                <label for="user_fname"><i class="fa-solid fa-user me-1"></i>Ad</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control custom-glass-input"
+                                       id="user_lname"
+                                       name="LastName"
+                                       placeholder="Soyad"
+                                       autocomplete="new-password"
+                                       required>
+                                <label for="user_lname"><i class="fa-solid fa-user me-1"></i>Soyad</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Posta -->
+                    <div class="form-floating mb-3">
+                        <input type="email"
+                               class="form-control custom-glass-input"
+                               id="email"
+                               name="Email"
+                               placeholder="E-Posta"
+                               autocomplete="new-password"
+                               required>
+                        <label for="email"><i class="fa-solid fa-envelope me-2"></i>E-Posta Adresi</label>
+                    </div>
+
+                    <!-- Telefon Numarası -->
+                    <div class="form-floating mb-3">
+                        <input type="tel"
+                               class="form-control custom-glass-input"
+                               id="phone"
+                               name="PhoneNumber"
+                               placeholder="05XX XXX XX XX"
+                               maxlength="15"
+                               autocomplete="new-password"
+                               required>
+                        <label for="phone"><i class="fa-solid fa-phone me-2"></i>Telefon Numarası</label>
+                    </div>
+
+                    <!-- Şifre -->
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password"
+                               class="form-control custom-glass-input pe-5"
+                               id="password"
+                               name="Password"
+                               placeholder="Şifre"
+                               minlength="6"
+                               autocomplete="new-password"
+                               required>
+                        <label for="password"><i class="fa-solid fa-lock me-2"></i>Şifre</label>
+                        <i class="fa-solid fa-eye toggle-password position-absolute" id="togglePassword"></i>
+                    </div>
+
+                    <!-- Şifre Tekrar -->
+                    <div class="form-floating mb-4">
+                        <input type="password"
+                               class="form-control custom-glass-input"
+                               id="confirmPassword"
+                               placeholder="Şifre Tekrar"
+                               autocomplete="new-password"
+                               required>
+                        <label for="confirmPassword"><i class="fa-solid fa-shield-halved me-2"></i>Şifre Tekrar</label>
+                        <div id="passwordError" class="text-warning small mt-1 d-none">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Şifreler birbiriyle eşleşmiyor!
+                        </div>
+                    </div>
+
+                    <!-- Sözleşme Onayı -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input custom-checkbox" type="checkbox" value="" id="termsCheck" required>
+                        <label class="form-check-label text-white-50 small" for="termsCheck">
+                            Kullanım koşullarını ve gizlilik politikasını kabul ediyorum.
+                        </label>
+                    </div>
+
+                    <!-- Gönder Butonu -->
+                    <button type="submit" class="btn btn-glass-submit w-100 py-3 fw-bold">
+                        <span>Hesabımı Oluştur</span>
+                        <i class="fa-solid fa-arrow-right ms-2 transition-icon"></i>
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.querySelector("#togglePassword");
+            const password = document.querySelector("#password");
+            const confirmPassword = document.querySelector("#confirmPassword");
+            const passwordError = document.querySelector("#passwordError");
+            const phoneInput = document.querySelector("#phone");
+            const form = document.querySelector("#registerForm");
+
+            // Şifre Göster / Gizle
+            togglePassword.addEventListener("click", function() {
+                const type = password.getAttribute("type") === "password" ? "text" : "password";
+                password.setAttribute("type", type);
+                this.classList.toggle("fa-eye");
+                this.classList.toggle("fa-eye-slash");
+            });
+
+            // Şifre Eşleşme Kontrolü
+            function checkPasswordMatch() {
+                if (confirmPassword.value && password.value !== confirmPassword.value) {
+                    passwordError.classList.remove("d-none");
+                    confirmPassword.setCustomValidity("Invalid");
+                } else {
+                    passwordError.classList.add("d-none");
+                    confirmPassword.setCustomValidity("");
+                }
+            }
+
+            password.addEventListener("keyup", checkPasswordMatch);
+            confirmPassword.addEventListener("keyup", checkPasswordMatch);
+
+            // Telefon Formatlama
+            phoneInput.addEventListener("input", function(e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+            });
+
+            // Form Submit Kontrolü
+            form.addEventListener("submit", function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add("was-validated");
+            }, false);
+        });
+    </script>
+}

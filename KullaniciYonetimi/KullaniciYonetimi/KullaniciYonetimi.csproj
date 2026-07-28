@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Desktop\icon.webp" Link="wwwroot\images\icon.webp" />
+  </ItemGroup>
+
 </Project>

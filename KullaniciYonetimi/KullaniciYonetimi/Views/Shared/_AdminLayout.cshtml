@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Yönetim Paneli</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+            :root {
+                --admin-bg: #121212;
+                --admin-card-bg: rgba(255, 255, 255, 0.05);
+                --admin-border: rgba(255, 255, 255, 0.1);
+                --birevim-red: #e30613;
+            }
+
+            body {
+                background-color: var(--admin-bg);
+                color: #e0e0e0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .sidebar {
+                width: 260px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background: #1a1a1a;
+                border-right: 1px solid var(--admin-border);
+                z-index: 1000;
+            }
+
+            .main-content {
+                margin-left: 260px;
+                padding: 2rem;
+            }
+
+            .nav-link-admin {
+                color: #b0b0b0;
+                padding: 0.8rem 1.2rem;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+                .nav-link-admin:hover, .nav-link-admin.active {
+                    background: rgba(227, 6, 19, 0.15);
+                    color: #fff;
+                    border-left: 4px solid var(--birevim-red);
+                }
+
+            .glass-card {
+                background: var(--admin-card-bg);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--admin-border);
+                border-radius: 12px;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar / Sol Menü -->
+    <div class="sidebar p-3 d-flex flex-column">
+        <div class="brand mb-4 px-2">
+            <h4 class="fw-bold text-white m-0">BİREVİM <span class="fs-6 text-danger">Panel</span></h4>
+        </div>
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-1">
+                <a href="#" class="nav-link-admin active">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Kullanıcı Yönetimi</span>
+                </a>
+            </li>
+        </ul>
+
+        <hr class="text-secondary" />
+
+        <div class="dropdown">
+            <a href="/Account/Login" class="nav-link-admin text-danger">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Çıkış Yap</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content / Ana İçerik -->
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
