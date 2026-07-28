@@ -1,42 +1,125 @@
 ﻿@model List<KullaniciYonetimi.ViewModels.UserViewModel>
 
-<h2>Yönetim Paneli - Kullanıcı Listesi</h2>
+@{
+    ViewData["Title"] = "Admin Paneli - Kullanıcı Yönetimi";
+}
 
-<table border="1" cellpadding="10">
-    <thead>
-        <tr>
-            <th>Ad Soyad</th>
-            <th>E-posta</th>
-            <th>Mevcut Rolü</th>
-            <th>İşlem</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.FullName</td>
-                <td>@user.Email</td>
-                <td><strong>@user.RoleName</strong></td>
-                <td>
-                    @* Her kullanıcının yanına özel bir mini form açıyoruz *@
-                    <form asp-controller="Admin" asp-action="YetkiDegistir" method="post" style="display:inline;">
+<style>
+    /* Tablonun arka planını şeffaf, yazılarını beyaz yapan özel Bootstrap ezici sınıfımız */
+    .glass-table {
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        --bs-table-border-color: rgba(255, 255, 255, 0.15); /* Çizgileri hafif saydam yapıyoruz */
+    }
 
-                        @* Arka plana gidecek olan kullaniciId'yi gizli (hidden) olarak tutuyoruz *@
-                        <input type="hidden" name="kullaniciId" value="@user.Id" />
-
-                        @* Admin'in yeni rolü seçebilmesi için açılır menü (Select) yapıyoruz *@
-                        <select name="yeniRolId" required>
-                            <option value="">Seçiniz...</option>
-                            <option value="1">Standart</option>
-                            <option value="2">Yönetici</option>
-                            <option value="3">Admin</option>
-                        </select>
-
-                        <button type="submit">Güncelle</button>
-                    </form>
-                </td>
-            </tr>
+        .glass-table th,
+        .glass-table td {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            vertical-align: middle;
         }
-    </tbody>
-</table>
+
+    /* Açılır menü (Select) için karanlık cam teması */
+    .glass-select {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+
+        .glass-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+            border-color: white !important;
+        }
+
+        .glass-select option {
+            background-color: #2c2c2c; /* Seçenekler açıldığında yazılar okunabilsin diye koyu gri */
+            color: white;
+        }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <!-- Tablonun geniş durması için col-lg-10 kullanıyoruz -->
+        <div class="col-12 col-lg-10 mt-4">
+
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <!-- Başlık -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-users-gear me-2"></i>Kullanıcı Yönetimi
+                    </h3>
+                </div>
+
+                <!-- Şeffaf Cam Efektli Tablo -->
+                <div class="table-responsive">
+                    <table class="table glass-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="fw-semibold">Ad Soyad</th>
+                                <th class="fw-semibold">E-Posta</th>
+                                <th class="fw-semibold">Mevcut Rolü</th>
+                                <th class="text-end fw-semibold">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>@user.FullName</td>
+                                        <td>@user.Email</td>
+                                        <td>
+                                            <!-- Mevcut rolü rozet (badge) içinde şık bir şekilde gösteriyoruz -->
+                                            <span class="badge bg-secondary bg-opacity-50 border border-light border-opacity-25 py-2 px-3 fw-normal">
+                                                @user.RoleName
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-flex justify-content-end align-items-center gap-2">
+
+                                                <!-- 1. YETKİ DEĞİŞTİR FORMU -->
+                                                <form asp-controller="Admin" asp-action="YetkiDegistir" method="post" class="d-flex align-items-center m-0">
+                                                    <input type="hidden" name="kullaniciId" value="@user.Id" />
+
+                                                    <!-- Şeffaf temaya uygun Select -->
+                                                    <select name="yeniRolId" class="form-select form-select-sm glass-select me-2" style="width: 130px;" required>
+                                                        <option value="">Seçiniz...</option>
+                                                        <option value="1">Standart</option>
+                                                        <option value="2">Yönetici</option>
+                                                        <option value="3">Admin</option>
+                                                    </select>
+
+                                                    <button type="submit" class="btn btn-sm btn-outline-light transition-icon">
+                                                        Güncelle
+                                                    </button>
+                                                </form>
+
+                                                <!-- 2. KULLANICI SİL FORMU -->
+                                                <form action="/Admin/DeleteUser" method="post" class="m-0" onsubmit="return confirm('@user.FullName adlı kullanıcıyı silmek istediğinize emin misiniz?');">
+                                                    <input type="hidden" name="id" value="@user.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger transition-icon" title="Kullanıcıyı Sil">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-white-50 border-0">Sistemde henüz kayıtlı kullanıcı bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

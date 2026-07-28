@@ -1,0 +1,106 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Profilim";
+
+    // Çerezden (Cookie) giriş yapmış kullanıcının anlık bilgilerini çekiyoruz
+    var userName = User.Identity.Name ?? "Kullanıcı";
+    var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? "E-Posta bulunamadı";
+    var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? "Standart";
+
+    // Avatar için ismin ilk harfini alıyoruz
+    var initial = !string.IsNullOrEmpty(userName) ? userName.Substring(0, 1).ToUpper() : "U";
+}
+
+<style>
+    .glass-profile-card {
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1.25rem;
+        color: #ffffff;
+    }
+
+    /* İsmine özel gradient yuvarlak avatar */
+    .profile-avatar {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(135deg, #ff4b4b 0%, #d30000 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: bold;
+        color: white;
+        margin: 0 auto;
+        box-shadow: 0 10px 25px rgba(211, 0, 0, 0.4);
+        border: 4px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.2rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: white;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container-fluid px-4 px-md-5 py-4 mt-3">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5">
+
+            <div class="glass-profile-card p-5 mt-4 text-center position-relative">
+
+                <!-- Üst Kısım: Avatar ve İsim -->
+                <div class="mb-4">
+                    <div class="profile-avatar mb-3">
+                        @initial
+                    </div>
+                    <h3 class="fw-bold mb-1">@userName</h3>
+
+                    <!-- Rolüne göre şık bir rozet -->
+                    @if (userRole == "Admin")
+                    {
+                        <span class="badge bg-danger bg-opacity-75 border border-light border-opacity-25 py-2 px-3 mt-2 rounded-pill"><i class="fa-solid fa-crown me-2"></i>Sistem Yöneticisi (Admin)</span>
+                    }
+                    else if (userRole == "Yönetici")
+                    {
+                        <span class="badge bg-primary bg-opacity-75 border border-light border-opacity-25 py-2 px-3 mt-2 rounded-pill"><i class="fa-solid fa-shield-halved me-2"></i>Yönetici</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary bg-opacity-50 border border-light border-opacity-25 py-2 px-3 mt-2 rounded-pill"><i class="fa-solid fa-user me-2"></i>Standart Kullanıcı</span>
+                    }
+                </div>
+
+                <hr class="border-light border-opacity-25 my-4">
+
+                <!-- Alt Kısım: Detaylı Bilgiler -->
+                <div class="text-start px-md-3">
+                    <div class="mb-3">
+                        <div class="info-label"><i class="fa-solid fa-envelope me-1"></i> E-Posta Adresi</div>
+                        <div class="info-value">@userEmail</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="info-label"><i class="fa-solid fa-address-card me-1"></i> Görevi / Rolü</div>
+                        <div class="info-value border-0 mb-0">@userRole</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

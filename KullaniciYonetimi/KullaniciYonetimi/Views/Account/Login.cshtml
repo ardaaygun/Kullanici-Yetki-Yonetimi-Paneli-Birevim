@@ -1,18 +1,93 @@
 ﻿@model KullaniciYonetimi.ViewModels.LoginViewModel
 
-<h2>Test Ekranı: Giriş Yap</h2>
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
 
-<div asp-validation-summary="All" style="color:red;"></div>
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <!-- İçeriği tam ortaya almak için justify-content-center kullanıyoruz -->
+    <div class="row justify-content-center">
 
-<form asp-action="Login" method="post">
-    <div>
-        <label>E-posta:</label><br />
-        <input asp-for="Email" />
+        <!-- Formun genişliği ve konumu -->
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="glass-register-card p-4 p-lg-5 mt-4 mx-auto">
+
+                <!-- Başlık ve Alt Metin -->
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-white mb-1">Hoş Geldiniz</h3>
+                    <p class="text-white-50 small">Hesabınıza erişmek için bilgilerinizi girin.</p>
+                </div>
+
+                <!-- Backend'den gelen genel hataları (Örn: Şifre yanlış) burada gösteriyoruz -->
+                <div asp-validation-summary="ModelOnly" class="text-warning small mb-3 text-center"></div>
+
+                <!-- Giriş Formu (Tarayıcı engellerini aşmak için novalidate eklendi) -->
+                <form id="loginForm" asp-action="Login" method="post" autocomplete="off" novalidate>
+
+                    <!-- E-Posta -->
+                    <div class="form-floating mb-3">
+                        <input type="email"
+                               class="form-control custom-glass-input"
+                               id="email"
+                               name="Email"
+                               placeholder="E-Posta"
+                               autocomplete="new-password">
+                        <label for="email"><i class="fa-solid fa-envelope me-2"></i>E-Posta Adresi</label>
+                        <span asp-validation-for="Email" class="text-warning small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Şifre -->
+                    <div class="form-floating mb-4 position-relative">
+                        <input type="password"
+                               class="form-control custom-glass-input pe-5"
+                               id="password"
+                               name="Password"
+                               placeholder="Şifre"
+                               autocomplete="new-password">
+                        <label for="password"><i class="fa-solid fa-lock me-2"></i>Şifre</label>
+                        <!-- Şifre Göster/Gizle İkonu -->
+                        <i class="fa-solid fa-eye toggle-password position-absolute" id="togglePassword"></i>
+                        <span asp-validation-for="Password" class="text-warning small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Giriş Yap Butonu -->
+                    <button type="submit" class="btn btn-glass-submit w-100 py-3 fw-bold mb-4">
+                        <span>Giriş Yap</span>
+                        <i class="fa-solid fa-arrow-right ms-2 transition-icon"></i>
+                    </button>
+
+                    <!-- Alt Yönlendirme Linki -->
+                    <div class="text-center">
+                        <span class="text-white-50 small">Hesabınız yok mu?</span>
+                        <a href="/Account/Register" class="text-white text-decoration-none fw-bold small ms-1" style="border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px;">
+                            Hesap Oluştur
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
     </div>
-    <div>
-        <label>Şifre:</label><br />
-        <input asp-for="Password" type="password" />
-    </div>
-    <br />
-    <button type="submit">Giriş Yap</button>
-</form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.querySelector("#togglePassword");
+            const password = document.querySelector("#password");
+
+            // Şifre Göster / Gizle Fonksiyonu
+            if (togglePassword && password) {
+                togglePassword.addEventListener("click", function() {
+                    const type = password.getAttribute("type") === "password" ? "text" : "password";
+                    password.setAttribute("type", type);
+
+                    // İkonları değiştir (Göz açık / kapalı)
+                    this.classList.toggle("fa-eye");
+                    this.classList.toggle("fa-eye-slash");
+                });
+            }
+        });
+    </script>
+}

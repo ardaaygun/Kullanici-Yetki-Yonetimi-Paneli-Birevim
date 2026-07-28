@@ -7,25 +7,44 @@ namespace KullaniciYonetimi.Controllers
 {
     public class HomeController : Controller
     {
-        // KÄ°LÄ°TSÄ°Z (Herkese AÃ§Ä±k): BaÅŸÄ±nda [Authorize] yok.
-        // Siteye giren herkes (ziyaretÃ§iler dahil) bu sayfayÄ± gÃ¶rebilir.
+        // 1. ANA SAYFA (Akýllý Yönlendirme)
+        // Siteye ilk girildiðinde veya logoya týklandýðýnda çalýþýr.
         public IActionResult Index()
+        {
+            // Kullanýcý sisteme giriþ yapmýþ mý?
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                // Giriþ yapan kiþi Admin ise (Claim'lerde Admin yazýyorsa) doðrudan Admin/Index'e at
+                if (User.IsInRole("Admin") || User.IsInRole("1"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
+                // Normal kullanýcý veya yöneticiyse Dashboard'a (veya Profilim'e) at
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            // Giriþ yapmamýþ ziyaretçiler için o þeffaf cam efektli "Kayýt Ol" formunu (Index.cshtml) göster
+            return View();
+        }
+
+        // 2. YENÝ EKLENEN DASHBOARD (Sadece Giriþ Yapanlar)
+        [Authorize]
+        public IActionResult Dashboard()
         {
             return View();
         }
 
-        // 1. SEVÄ°YE KÄ°LÄ°T: Sadece sisteme giriÅŸ yapmÄ±ÅŸ olanlar gÃ¶rebilir.
-        // KimliÄŸi olmayan biri buraya girmeye Ã§alÄ±ÅŸÄ±rsa, sistem onu otomatik olarak 
-        // Program.cs'de belirlediÄŸimiz "/Account/Login" adresine postalar.
+        // 3. ESKÝ KODUNDAN KORUNAN PROFIL SAYFASI (Sadece Giriþ Yapanlar)
         [Authorize]
         public IActionResult Profilim()
         {
             return View();
         }
 
-        // 2. SEVÄ°YE KÄ°LÄ°T (Role-Based): Sadece giriÅŸ yapmÄ±ÅŸ VE rolÃ¼ "Admin" olanlar gÃ¶rebilir.
-        // Normal bir kullanÄ±cÄ± (User) buraya girmeye Ã§alÄ±ÅŸÄ±rsa, giriÅŸ yapmÄ±ÅŸ olsa bile 
-        // yetkisi yetmediÄŸi iÃ§in "/Account/AccessDenied" (EriÅŸim Engellendi) sayfasÄ±na yÃ¶nlendirilir.
+        // 4. ESKÝ KODUNDAN KORUNAN YÖNETÝM PANELÝ (Sadece Adminler)
+        // Not: Kullanýcýlarý listelediðimiz asýl yer "AdminController" olduðu için bu sayfayý 
+        // farklý genel ayarlar (site logolarý, genel istatistikler vb.) için kullanabilirsin.
         [Authorize(Roles = "Admin")]
         public IActionResult YonetimPaneli()
         {
