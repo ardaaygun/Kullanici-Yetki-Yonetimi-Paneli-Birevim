@@ -1,0 +1,18 @@
+﻿@model KullaniciYonetimi.ViewModels.LoginViewModel
+
+<h2>Test Ekranı: Giriş Yap</h2>
+
+<div asp-validation-summary="All" style="color:red;"></div>
+
+<form asp-action="Login" method="post">
+    <div>
+        <label>E-posta:</label><br />
+        <input asp-for="Email" />
+    </div>
+    <div>
+        <label>Şifre:</label><br />
+        <input asp-for="Password" type="password" />
+    </div>
+    <br />
+    <button type="submit">Giriş Yap</button>
+</form>

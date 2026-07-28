@@ -146,7 +146,19 @@ namespace KullaniciYonetimi.Controllers
                             new ClaimsPrincipal(claimsIdentity),
                             authProperties);
 
-                        return RedirectToAction("Index", "Home");
+                        // --- ROL ID BAZLI YÖNLENDİRME MANTIĞI ---
+                        if (user.RoleId == 3) // Varsayalım ki 3 numaralı ID "Admin" rolüne ait
+                        {
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        else if (user.RoleId == 2) // 2 numaralı ID "Yönetici" rolüne ait
+                        {
+                            return RedirectToAction("Dashboard", "Home");
+                        }
+                        else // Diğer standart kullanıcılar (Örn: RoleId == 1)
+                        {
+                            return RedirectToAction("Dashboard", "Home");
+                        }
                     }
                 }
 
