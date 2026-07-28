@@ -28,7 +28,7 @@ namespace KullaniciYonetimi.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View(); // Bu, "Git bana Register.cshtml arayüzünü bul ve ekrana bas" demektir.
+            return View(); 
         }
 
         // 3. POST: Formdan Gelen Veriyi Yakalama ve Kaydetme İşlemi
@@ -73,15 +73,14 @@ namespace KullaniciYonetimi.Controllers
                 };
 
                 // KURAL 3: Veritabanına Kaydetme
-                _context.Users.Add(newUser); // Tabloya satırı ekle
-                _context.SaveChanges();      // Değişiklikleri SQL'e yansıt!
+                _context.Users.Add(newUser);
+                _context.SaveChanges();      
 
                 // Kayıt başarılıysa adamı Giriş Yap (Login) sayfasına yönlendiriyoruz
                 return RedirectToAction("Login");
             }
 
-            // Eğer kurallara uyulmamışsa (Örn: şifreler eşleşmediyse), kullanıcının girdiği 
-            // verileri (model) kaybetmeden aynı formu hatalarla birlikte geri göster.
+            
             return View(model);
         }
 
@@ -89,7 +88,7 @@ namespace KullaniciYonetimi.Controllers
         private string BasitSifrelemeYap(string plainText)
         {
             // Gelen düz metni anlaşılmaz bir formata (Base64) çevirir. 
-            // (Kurumsal projelerde SHA256 veya BCrypt gibi daha güçlü algoritmalar kullanılır)
+            
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
         }
@@ -162,8 +161,7 @@ namespace KullaniciYonetimi.Controllers
                     }
                 }
 
-                // Eğer e-posta yoksa veya şifre yanlışsa, güvenlik gereği hangisinin yanlış olduğunu 
-                // açıkça söylemeyiz, genel bir hata veririz.
+                
                 ModelState.AddModelError("", "E-posta veya şifre hatalı.");
             }
 

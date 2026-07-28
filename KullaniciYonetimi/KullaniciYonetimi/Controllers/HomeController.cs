@@ -35,16 +35,13 @@ namespace KullaniciYonetimi.Controllers
             return View();
         }
 
-        // 3. ESKÝ KODUNDAN KORUNAN PROFIL SAYFASI (Sadece Giriþ Yapanlar)
+        // 3. PROFIL SAYFASI (Sadece Giriþ Yapanlar)
         [Authorize]
         public IActionResult Profilim()
         {
             return View();
         }
-
-        // 4. ESKÝ KODUNDAN KORUNAN YÖNETÝM PANELÝ (Sadece Adminler)
-        // Not: Kullanýcýlarý listelediðimiz asýl yer "AdminController" olduðu için bu sayfayý 
-        // farklý genel ayarlar (site logolarý, genel istatistikler vb.) için kullanabilirsin.
+         
         [Authorize(Roles = "Admin")]
         public IActionResult YonetimPaneli()
         {
