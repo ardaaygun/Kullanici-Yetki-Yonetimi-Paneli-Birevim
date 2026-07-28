@@ -17,4 +17,6 @@
         // (Navigation Property)
         public Role Role { get; set; }
     }
+
+
 }

@@ -38,7 +38,14 @@ namespace KullaniciYonetimi.Controllers
         {
             // ModelState.IsValid: Daha önce ViewModel'e yazdığımız [Required], [EmailAddress] kurallarına uyulmuş mu?
             if (ModelState.IsValid)
-            {
+            {// KURAL 1: Birevim şirket maili zorunluluğu!
+                // (OrdinalIgnoreCase: Kullanıcı @BIREVIM.COM.TR yazsa bile büyük/küçük harf takıntısı yapmadan kabul eder)
+                if (!model.Email.EndsWith("@birevim.com.tr", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    // Şart sağlanmıyorsa ekrana hata mesajı bas ve formu geri gönder
+                    ModelState.AddModelError("Email", "Güvenlik İhlali: Sisteme sadece @birevim.com.tr uzantılı şirket e-postaları ile kayıt olunabilir!");
+                    return View(model);
+                }
                 // KURAL 1: Aynı e-posta ile başka biri var mı?
                 // Veritabanına (_context) gidip Users tablosunda bu e-postayı arıyoruz.
                 var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
@@ -114,30 +121,31 @@ namespace KullaniciYonetimi.Controllers
 
                     if (user.PasswordHash == hashedGirisSifresi)
                     {
-                        // 3. ADIM: Yaka Kartı (Claim) Oluşturma
-                        // Sistemin kullanıcının kim olduğunu bilmesi için bilgileri bir listeye koyuyoruz.
+                        // 1. YENİ EKLENEN KOD: Kullanıcının RoleId'sine bakarak Roles tablosundan rolün adını çekiyoruz
+                        var userRole = _context.Roles.FirstOrDefault(r => r.Id == user.RoleId);
+
+                        // Eğer bir terslik olur da rol bulunamazsa, güvenlik amacıyla varsayılan olarak "Standart" atıyoruz
+                        string roleName = userRole != null ? userRole.RoleName : "Standart";
+
+                        // 2. Yaka Kartı (Claim) Oluşturma
                         var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Kimlik No
-                            new Claim(ClaimTypes.Name, user.FirstName),               // Adı
-                            new Claim(ClaimTypes.Email, user.Email),                  // E-postası
-                            new Claim(ClaimTypes.Role, "Admin") // Şimdilik test için statik veriyoruz, sonra veritabanından çekeceğiz
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim(ClaimTypes.Name, user.FirstName),
+                            new Claim(ClaimTypes.Email, user.Email),                  
+                            
+                            // 3. GÜNCELLEME: "Admin" yazısını sildik, veritabanından gelen dinamik roleName değişkenini koyduk!
+                            new Claim(ClaimTypes.Role, roleName)
                         };
 
-                        // 4. ADIM: Tarayıcıya Çerez (Cookie) Bırakma İşlemi
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        var authProperties = new AuthenticationProperties
-                        {
-                            // İstersen buraya "Beni Hatırla" (IsPersistent = true) özelliği de eklenebilir
-                        };
+                        var authProperties = new AuthenticationProperties { };
 
-                        // Giriş işlemini (SignIn) asenkron olarak tamamlıyoruz
                         await HttpContext.SignInAsync(
                             CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(claimsIdentity),
                             authProperties);
 
-                        // Her şey başarılıysa kullanıcıyı Ana Sayfaya yönlendir
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -148,6 +156,16 @@ namespace KullaniciYonetimi.Controllers
             }
 
             return View(model);
+        }
+
+        // Çıkış yapma işlemi
+        public async Task<IActionResult> Logout()
+        {
+            // Tarayıcıdaki çerezi (yaka kartını) siliyoruz
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Çıkış yaptıktan sonra kullanıcıyı Login sayfasına yönlendiriyoruz
+            return RedirectToAction("Login", "Account");
         }
     }
 

@@ -19,6 +19,8 @@ namespace KullaniciYonetimi.ViewModels
 
         [Required(ErrorMessage = "Şifre zorunludur.")]
         [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$",
+            ErrorMessage = "Şifreniz en az 8 karakter uzunluğunda olmalı; en az 1 büyük harf, 1 küçük harf, 1 rakam ve 1 özel karakter (!@#$%^&*) içermelidir.")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Şifre tekrarı zorunludur.")]
