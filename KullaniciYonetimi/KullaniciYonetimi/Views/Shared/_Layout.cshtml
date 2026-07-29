@@ -84,7 +84,7 @@
                     transform: scale(1.05);
                 }
 
-            .brand-logo:hover {
+            .brand-logo-container:hover .site-logo {
                 opacity: 0.9;
             }
 
@@ -228,6 +228,18 @@
                     background-color: transparent !important;
                     background: none !important;
                 }
+
+            /* Sol Navigasyon İkonları Hover Efekti */
+            .nav-item-hover {
+                opacity: 0.7;
+                transition: all 0.3s ease;
+            }
+
+                .nav-item-hover:hover {
+                    opacity: 1;
+                    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                    transform: translateY(-1px);
+                }
     </style>
 </head>
 <body>
@@ -237,17 +249,58 @@
         <header>
             <nav class="navbar custom-navbar">
                 <div class="container-fluid px-4 px-md-5 d-flex justify-content-between align-items-center">
-                    <div class="d-none d-md-block" style="width: 140px;"></div>
+                    <!-- Sol Taraf: Dinamik Navigasyon Menüsü -->
+                    <div class="d-flex align-items-center" style="min-width: 140px;">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- Herkese Açık Dashboard İkonu -->
+                         
+
+                            <!-- Sadece Adminlere Özel Kullanıcı Yönetimi İkonu -->
+                            @if (User.IsInRole("Admin") || User.IsInRole("3"))
+                            {
+                                <a href="/Home/Dashboard" class="text-white text-decoration-none transition-icon nav-item-hover me-4" title="Dashboard">
+                                    <i class="fa-solid fa-chart-pie fa-lg me-2"></i>
+                                    <span class="d-none d-md-inline small fw-bold">Dashboard</span>
+                                </a>
+                                
+                                
+                                <a href="/Admin/Index" class="text-white text-decoration-none transition-icon nav-item-hover" title="Kullanıcı Yönetimi">
+                                    <i class="fa-solid fa-users-gear fa-lg me-2"></i>
+                                    <span class="d-none d-md-inline small fw-bold">Kullanıcılar</span>
+                                </a>
+                            }
+                        }
+                    </div>
 
                     <!-- Orta Taraf: Resmi BİREVİM Logosu -->
                     <a class="brand-logo-container text-center mx-auto" href="/">
                         <img src="https://www.birevim.com/assets/img/logo-red.svg" alt="BİREVİM Logo" class="site-logo">
                     </a>
 
-                    <div class="text-end" style="width: 140px;">
-                        <a href="/Account/Login" class="btn-login">
-                            <i class="fa-solid fa-user me-2"></i>Giriş Yap
-                        </a>
+                    <!-- Sağ Taraf: Profil ve Giriş/Çıkış Butonları -->
+                    <div class="text-end" style="min-width: 140px;">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="d-flex justify-content-end align-items-center gap-3">
+                                <!-- Profil İkonu -->
+                                <a href="/Home/Profilim" class="text-white text-decoration-none transition-icon" title="Profilim" style="opacity: 0.8;">
+                                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                                </a>
+
+                                <!-- Çıkış Yap Butonu -->
+                                <a href="/Account/Logout" class="btn btn-sm btn-outline-light rounded-pill px-3 py-2 transition-icon" style="border-color: rgba(255,255,255,0.4);">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i>Çıkış Yap
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Giriş Yap Butonu (Sadece Ziyaretçiler Görür) -->
+                            <a href="/Account/Login" class="btn-login">
+                                <i class="fa-solid fa-user me-2"></i>Giriş Yap
+                            </a>
+                        }
                     </div>
                 </div>
             </nav>

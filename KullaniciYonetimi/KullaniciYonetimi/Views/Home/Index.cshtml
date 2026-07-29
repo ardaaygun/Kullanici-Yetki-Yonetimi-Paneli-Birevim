@@ -1,4 +1,6 @@
-﻿@{
+﻿@model KullaniciYonetimi.ViewModels.RegisterViewModel
+
+@{
     ViewData["Title"] = "Hesap Oluştur";
 }
 
@@ -13,7 +15,11 @@
                     <h3 class="fw-bold text-white mb-1">Hesap Oluştur</h3>
                 </div>
 
-                <form id="registerForm" action="/Account/Register" method="post" class="needs-validation" autocomplete="off" novalidate>
+                <!-- Backend'den gelen genel hatalar (Örn: birevim.com.tr kuralı) -->
+                <div asp-validation-summary="ModelOnly" class="text-warning small mb-3"></div>
+
+                <!-- novalidate ekledik ki tarayıcı kendi engellemesin, işi tamamen senin C# kodun yönetsin -->
+                <form id="registerForm" action="/Account/Register" method="post" autocomplete="off" novalidate>
 
                     <!-- Ad & Soyad -->
                     <div class="row g-2 mb-3">
@@ -24,8 +30,7 @@
                                        id="user_fname"
                                        name="FirstName"
                                        placeholder="Ad"
-                                       autocomplete="new-password"
-                                       required>
+                                       autocomplete="new-password">
                                 <label for="user_fname"><i class="fa-solid fa-user me-1"></i>Ad</label>
                             </div>
                         </div>
@@ -36,8 +41,7 @@
                                        id="user_lname"
                                        name="LastName"
                                        placeholder="Soyad"
-                                       autocomplete="new-password"
-                                       required>
+                                       autocomplete="new-password">
                                 <label for="user_lname"><i class="fa-solid fa-user me-1"></i>Soyad</label>
                             </div>
                         </div>
@@ -50,9 +54,9 @@
                                id="email"
                                name="Email"
                                placeholder="E-Posta"
-                               autocomplete="new-password"
-                               required>
+                               autocomplete="new-password">
                         <label for="email"><i class="fa-solid fa-envelope me-2"></i>E-Posta Adresi</label>
+                        <span asp-validation-for="Email" class="text-warning small d-block mt-1"></span>
                     </div>
 
                     <!-- Telefon Numarası -->
@@ -63,8 +67,7 @@
                                name="PhoneNumber"
                                placeholder="05XX XXX XX XX"
                                maxlength="15"
-                               autocomplete="new-password"
-                               required>
+                               autocomplete="new-password">
                         <label for="phone"><i class="fa-solid fa-phone me-2"></i>Telefon Numarası</label>
                     </div>
 
@@ -75,11 +78,10 @@
                                id="password"
                                name="Password"
                                placeholder="Şifre"
-                               minlength="6"
-                               autocomplete="new-password"
-                               required>
+                               autocomplete="new-password">
                         <label for="password"><i class="fa-solid fa-lock me-2"></i>Şifre</label>
                         <i class="fa-solid fa-eye toggle-password position-absolute" id="togglePassword"></i>
+                        <span asp-validation-for="Password" class="text-warning small d-block mt-1"></span>
                     </div>
 
                     <!-- Şifre Tekrar -->
@@ -87,18 +89,19 @@
                         <input type="password"
                                class="form-control custom-glass-input"
                                id="confirmPassword"
+                               name="ConfirmPassword"
                                placeholder="Şifre Tekrar"
-                               autocomplete="new-password"
-                               required>
+                               autocomplete="new-password">
                         <label for="confirmPassword"><i class="fa-solid fa-shield-halved me-2"></i>Şifre Tekrar</label>
                         <div id="passwordError" class="text-warning small mt-1 d-none">
                             <i class="fa-solid fa-triangle-exclamation me-1"></i> Şifreler birbiriyle eşleşmiyor!
                         </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-warning small d-block mt-1"></span>
                     </div>
 
                     <!-- Sözleşme Onayı -->
                     <div class="form-check mb-4">
-                        <input class="form-check-input custom-checkbox" type="checkbox" value="" id="termsCheck" required>
+                        <input class="form-check-input custom-checkbox" type="checkbox" value="" id="termsCheck">
                         <label class="form-check-label text-white-50 small" for="termsCheck">
                             Kullanım koşullarını ve gizlilik politikasını kabul ediyorum.
                         </label>
@@ -124,44 +127,38 @@
             const confirmPassword = document.querySelector("#confirmPassword");
             const passwordError = document.querySelector("#passwordError");
             const phoneInput = document.querySelector("#phone");
-            const form = document.querySelector("#registerForm");
 
             // Şifre Göster / Gizle
-            togglePassword.addEventListener("click", function() {
-                const type = password.getAttribute("type") === "password" ? "text" : "password";
-                password.setAttribute("type", type);
-                this.classList.toggle("fa-eye");
-                this.classList.toggle("fa-eye-slash");
-            });
+            if(togglePassword && password) {
+                togglePassword.addEventListener("click", function() {
+                    const type = password.getAttribute("type") === "password" ? "text" : "password";
+                    password.setAttribute("type", type);
+                    this.classList.toggle("fa-eye");
+                    this.classList.toggle("fa-eye-slash");
+                });
+            }
 
-            // Şifre Eşleşme Kontrolü
+            // Şifre Eşleşme Kontrolü (Görsel uyarı amaçlı)
             function checkPasswordMatch() {
                 if (confirmPassword.value && password.value !== confirmPassword.value) {
                     passwordError.classList.remove("d-none");
-                    confirmPassword.setCustomValidity("Invalid");
                 } else {
                     passwordError.classList.add("d-none");
-                    confirmPassword.setCustomValidity("");
                 }
             }
 
-            password.addEventListener("keyup", checkPasswordMatch);
-            confirmPassword.addEventListener("keyup", checkPasswordMatch);
+            if(password && confirmPassword) {
+                password.addEventListener("keyup", checkPasswordMatch);
+                confirmPassword.addEventListener("keyup", checkPasswordMatch);
+            }
 
             // Telefon Formatlama
-            phoneInput.addEventListener("input", function(e) {
-                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,3})(\d{0,2})(\d{0,2})/);
-                e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
-            });
-
-            // Form Submit Kontrolü
-            form.addEventListener("submit", function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add("was-validated");
-            }, false);
+            if(phoneInput) {
+                phoneInput.addEventListener("input", function(e) {
+                    let x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                    e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+                });
+            }
         });
     </script>
 }

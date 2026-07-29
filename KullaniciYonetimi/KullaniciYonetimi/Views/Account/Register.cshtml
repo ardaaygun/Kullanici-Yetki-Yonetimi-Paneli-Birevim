@@ -1,84 +1,164 @@
-﻿@model KullaniciYonetimi.Models.ViewModels.RegisterViewModel
+﻿@model KullaniciYonetimi.ViewModels.RegisterViewModel
+
 @{
-    Layout = null; // Veya kullandığın özel bir layout varsa onun yolu
     ViewData["Title"] = "Hesap Oluştur";
 }
 
-<!-- Tasarımının olduğu ana kapsayıcı (container / card) -->
-<form id="registerForm" action="/Account/Register" method="post" autocomplete="off">
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row">
+        <!-- Sol Taraf: Hesap Oluştur Kartı -->
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="glass-register-card p-4 p-lg-5 mt-4">
 
-    <!-- Ad & Soyad -->
-    <div class="row g-2 mb-3">
-        <div class="col-6">
-            <input type="text" name="FirstName" class="form-control" placeholder="Ad" required>
+                <!-- Sadece "Hesap Oluştur" Başlığı -->
+                <div class="text-start mb-4">
+                    <h3 class="fw-bold text-white mb-1">Hesap Oluştur</h3>
+                </div>
+
+                <!-- Backend'den gelen genel hatalar (Örn: birevim.com.tr kuralı) -->
+                <div asp-validation-summary="ModelOnly" class="text-warning small mb-3"></div>
+
+                <!-- novalidate ekledik ki tarayıcı kendi engellemesin, işi tamamen senin C# kodun yönetsin -->
+                <form id="registerForm" action="/Account/Register" method="post" autocomplete="off" novalidate>
+
+                    <!-- Ad & Soyad -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control custom-glass-input"
+                                       id="user_fname"
+                                       name="FirstName"
+                                       placeholder="Ad"
+                                       autocomplete="new-password">
+                                <label for="user_fname"><i class="fa-solid fa-user me-1"></i>Ad</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control custom-glass-input"
+                                       id="user_lname"
+                                       name="LastName"
+                                       placeholder="Soyad"
+                                       autocomplete="new-password">
+                                <label for="user_lname"><i class="fa-solid fa-user me-1"></i>Soyad</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Posta -->
+                    <div class="form-floating mb-3">
+                        <input type="email"
+                               class="form-control custom-glass-input"
+                               id="email"
+                               name="Email"
+                               placeholder="E-Posta"
+                               autocomplete="new-password">
+                        <label for="email"><i class="fa-solid fa-envelope me-2"></i>E-Posta Adresi</label>
+                        <span asp-validation-for="Email" class="text-warning small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Telefon Numarası -->
+                    <div class="form-floating mb-3">
+                        <input type="tel"
+                               class="form-control custom-glass-input"
+                               id="phone"
+                               name="PhoneNumber"
+                               placeholder="05XX XXX XX XX"
+                               maxlength="15"
+                               autocomplete="new-password">
+                        <label for="phone"><i class="fa-solid fa-phone me-2"></i>Telefon Numarası</label>
+                    </div>
+
+                    <!-- Şifre -->
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password"
+                               class="form-control custom-glass-input pe-5"
+                               id="password"
+                               name="Password"
+                               placeholder="Şifre"
+                               autocomplete="new-password">
+                        <label for="password"><i class="fa-solid fa-lock me-2"></i>Şifre</label>
+                        <i class="fa-solid fa-eye toggle-password position-absolute" id="togglePassword"></i>
+                        <span asp-validation-for="Password" class="text-warning small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Şifre Tekrar -->
+                    <div class="form-floating mb-4">
+                        <input type="password"
+                               class="form-control custom-glass-input"
+                               id="confirmPassword"
+                               name="ConfirmPassword"
+                               placeholder="Şifre Tekrar"
+                               autocomplete="new-password">
+                        <label for="confirmPassword"><i class="fa-solid fa-shield-halved me-2"></i>Şifre Tekrar</label>
+                        <div id="passwordError" class="text-warning small mt-1 d-none">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Şifreler birbiriyle eşleşmiyor!
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-warning small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Sözleşme Onayı -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input custom-checkbox" type="checkbox" value="" id="termsCheck">
+                        <label class="form-check-label text-white-50 small" for="termsCheck">
+                            Kullanım koşullarını ve gizlilik politikasını kabul ediyorum.
+                        </label>
+                    </div>
+
+                    <!-- Gönder Butonu -->
+                    <button type="submit" class="btn btn-glass-submit w-100 py-3 fw-bold">
+                        <span>Hesabımı Oluştur</span>
+                        <i class="fa-solid fa-arrow-right ms-2 transition-icon"></i>
+                    </button>
+                </form>
+
+            </div>
         </div>
-        <div class="col-6">
-            <input type="text" name="LastName" class="form-control" placeholder="Soyad" required>
-        </div>
     </div>
+</div>
 
-    <!-- E-Posta Adresi -->
-    <div class="mb-3">
-        <input type="email" name="Email" class="form-control" placeholder="E-Posta Adresi" required>
-    </div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.querySelector("#togglePassword");
+            const password = document.querySelector("#password");
+            const confirmPassword = document.querySelector("#confirmPassword");
+            const passwordError = document.querySelector("#passwordError");
+            const phoneInput = document.querySelector("#phone");
 
-    <!-- Telefon Numarası -->
-    <div class="mb-3">
-        <input type="tel" name="PhoneNumber" class="form-control" placeholder="Telefon Numarası" required>
-    </div>
+            // Şifre Göster / Gizle
+            if (togglePassword && password) {
+                togglePassword.addEventListener("click", function() {
+                    const type = password.getAttribute("type") === "password" ? "text" : "password";
+                    password.setAttribute("type", type);
+                    this.classList.toggle("fa-eye");
+                    this.classList.toggle("fa-eye-slash");
+                });
+            }
 
-    <!-- Şifre -->
-    <div class="mb-3">
-        <input type="password" id="pass" name="Password" class="form-control" placeholder="Şifre" required>
-    </div>
+            // Şifre Eşleşme Kontrolü (Görsel uyarı amaçlı)
+            function checkPasswordMatch() {
+                if (confirmPassword.value && password.value !== confirmPassword.value) {
+                    passwordError.classList.remove("d-none");
+                } else {
+                    passwordError.classList.add("d-none");
+                }
+            }
 
-    <!-- Şifre Tekrar -->
-    <div class="mb-3">
-        <input type="password" id="confirmPass" name="ConfirmPassword" class="form-control" placeholder="Şifre Tekrar" required>
-    </div>
+            if (password && confirmPassword) {
+                password.addEventListener("keyup", checkPasswordMatch);
+                confirmPassword.addEventListener("keyup", checkPasswordMatch);
+            }
 
-    <!-- Kullanım Koşulları Checkbox -->
-    <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" id="terms" name="IsTermsAccepted" value="true" required>
-        <label class="form-check-label text-white-50 small" for="terms">
-            Kullanım koşullarını ve gizlilik politikasını kabul ediyorum.
-        </label>
-    </div>
-
-    <!-- Hesabımı Oluştur Butonu -->
-    <button type="submit" id="btnRegister" class="btn btn-light w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2">
-        <span>Hesabımı Oluştur</span>
-        <i class="fa-solid fa-arrow-right"></i>
-    </button>
-</form>
-
-<!-- Tıklama Anı ve Ön Kontrol Script'i -->
-<script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-        const pass = document.getElementById("pass").value;
-        const confirmPass = document.getElementById("confirmPass").value;
-        const terms = document.getElementById("terms").checked;
-        const btn = document.getElementById("btnRegister");
-
-        // Şifreler uyuşuyor mu?
-        if (pass !== confirmPass) {
-            e.preventDefault();
-            alert("Girdiğiniz şifreler birbiriyle eşleşmiyor!");
-            return;
-        }
-
-        // Sözleşme kutusu işaretli mi?
-        if (!terms) {
-            e.preventDefault();
-            alert("Lütfen kullanım koşullarını kabul edin.");
-            return;
-        }
-
-        // Buton Yükleniyor (Loading) Durumu
-        btn.disabled = true;
-        btn.innerHTML = `
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span>Hesap Oluşturuluyor...</span>
-        `;
-    });
-</script>
+            // Telefon Formatlama
+            if (phoneInput) {
+                phoneInput.addEventListener("input", function(e) {
+                    let x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                    e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '');
+                });
+            }
+        });
+    </script>
+}
