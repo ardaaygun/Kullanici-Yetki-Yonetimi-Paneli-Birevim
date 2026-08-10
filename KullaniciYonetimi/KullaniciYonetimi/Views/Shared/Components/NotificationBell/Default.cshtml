@@ -1,0 +1,107 @@
+﻿@model List<KullaniciYonetimi.Models.UserNotification>
+
+<style>
+    /* Açılır Menü Cam Efekti (Projenin ana temasına uygun) */
+    .glass-dropdown {
+        background: rgba(15, 15, 15, 0.85) !important; /* Okunabilirlik için saydamlık biraz daha koyu */
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 15px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        padding: 0.5rem 0;
+        min-width: 320px;
+    }
+
+    /* Bildirim Elemanları ve Kırmızı Hover Efekti */
+    .glass-notification-item {
+        background-color: transparent !important;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+        .glass-notification-item:hover, .glass-notification-item:focus {
+            /* Kurumsal kırmızının (%15 saydam hali) */
+            background-color: rgba(227, 6, 19, 0.15) !important;
+            /* Üstüne gelince hafif sağa kayma efekti */
+            transform: translateX(4px);
+        }
+
+            /* Hover durumunda Bootstrap'in yazıyı siyah yapmasını engelleyip beyaz kalmasını zorluyoruz */
+            .glass-notification-item:hover strong,
+            .glass-notification-item:hover small,
+            .glass-notification-item:hover div {
+                color: #ffffff !important;
+            }
+
+    /* Rozet (Badge) Konumlandırması */
+    .custom-badge {
+        font-size: 0.65rem;
+        transform: translate(-30%, 10%) !important;
+    }
+</style> 
+
+<li class="nav-item dropdown d-flex align-items-center">
+
+    <a class="nav-link text-white" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+        <!-- 2. İkonu ve rozeti sıkıca bir arada tutacak kapsayıcı span -->
+        <span class="position-relative d-inline-block mt-1">
+            <i class="fa-solid fa-bell fs-5"></i>
+
+            @if (ViewBag.UnreadCount > 0)
+            {
+                <!-- Rozet artık doğrudan çanın köşesine yapışacak -->
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.35em 0.45em; border: 1px solid rgba(255,255,255,0.2);">
+                    @ViewBag.UnreadCount
+                    <span class="visually-hidden">Okunmamış bildirimler</span>
+                </span>
+            }
+        </span>
+
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-2" aria-labelledby="notificationDropdown">
+        <li>
+            <h6 class="dropdown-header text-white fw-bold mb-2 pb-2 border-bottom border-secondary border-opacity-50">
+                <i class="fa-solid fa-bell-concierge me-2"></i>Bildirimleriniz
+            </h6>
+        </li>
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                /* Tipe göre dinamik renk */
+                string iconColor = item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Info ? "text-info" :
+                                   item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Warning ? "text-warning" : "text-danger";
+
+                <li>
+                    <a class="dropdown-item py-2 px-3 glass-notification-item text-white" href="/Notification/MarkAsRead/@item.NotificationId" style="white-space: normal;">
+                        <div class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-exclamation @iconColor mt-1 me-3 fs-5"></i>
+                            <div>
+                                <strong class="d-block mb-1 text-white">@item.Notification.Title</strong>
+                                <small class="d-block text-white-50" style="font-size: 0.85rem;">@item.Notification.Description</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li><span class="dropdown-item text-white-50 text-center py-4 bg-transparent">Yeni bildiriminiz yok.</span></li>
+        }
+
+        <!-- TÜMÜNÜ GÖR BUTONU ARTIK HER DURUMDA EN ALTTA ÇIKACAK -->
+        <li>
+            <hr class="dropdown-divider border-secondary border-opacity-50 my-1">
+        </li>
+        <li>
+            <a class="dropdown-item text-center py-2 fw-semibold" href="/Notification/MyNotifications" style="color: #e30613; background: transparent;">
+                Tümünü Gör <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </li>
+    </ul>
+</li>

@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Yeni Bildirim Gönder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Arayüze uygun karanlık cam teması - Input ve Select için */
+    .glass-input, .glass-select {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+
+        .glass-input:focus, .glass-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+            border-color: white !important;
+            color: white !important;
+        }
+
+        /* Placeholder (ipucu metni) rengini beyazın saydam bir tonu yapıyoruz */
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .glass-select option {
+            background-color: #2c2c2c; /* Seçenekler açıldığında okunabilmesi için koyu gri */
+            color: white;
+        }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <!-- Formun ekranda çok yayılmaması ve şık durması için col-lg-8 kullanıyoruz -->
+        <div class="col-12 col-lg-8 mt-4">
+
+            <!-- Admin panelinden aldığımız ana cam efekti sınıfı: glass-register-card -->
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <!-- Başlık -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-bell me-2"></i>Yeni Bildirim Gönder
+                    </h3>
+                </div>
+
+                <!-- Form Başlangıcı -->
+                <form asp-controller="Notification" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-4">
+                        <!-- Bildirim Başlığı -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-white">Başlık</label>
+                            <input type="text" name="title" class="form-control glass-input" placeholder="Örn: Sistem Bakımı" required />
+                        </div>
+
+                        <!-- Bildirim Açıklaması -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-white">Açıklama</label>
+                            <textarea name="description" class="form-control glass-input" rows="4" placeholder="Bildirim detaylarını buraya yazınız..." required></textarea>
+                        </div>
+
+                        <!-- Bildirim Tipi -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-white">Bildirim Tipi</label>
+                            <select name="type" class="form-select glass-select" required>
+                                <option value="1">Bilgi (Info)</option>
+                                <option value="2">Uyarı (Warning)</option>
+                                <option value="3">Hata (Error)</option>
+                            </select>
+                        </div>
+
+                        <!-- Hedef Kitle -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-white">Hedef Kitle</label>
+                            <select name="targetAudience" class="form-select glass-select" required>
+                                <option value="All">Tüm Kullanıcılar</option>
+                            </select>
+                        </div>
+
+                        <!-- İşlem Butonları -->
+                        <div class="col-12 mt-5 text-end">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light me-2 transition-icon">İptal</a>
+                            <button type="submit" class="btn btn-light px-4 transition-icon fw-semibold text-dark">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Gönder
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

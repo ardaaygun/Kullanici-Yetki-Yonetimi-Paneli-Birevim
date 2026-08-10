@@ -278,21 +278,31 @@
                         <img src="https://www.birevim.com/assets/img/logo-red.svg" alt="BİREVİM Logo" class="site-logo">
                     </a>
 
+                    
                     <!-- Sağ Taraf: Profil ve Giriş/Çıkış Butonları -->
                     <div class="text-end" style="min-width: 140px;">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <div class="d-flex justify-content-end align-items-center gap-3">
-                                <!-- Profil İkonu -->
-                                <a href="/Home/Profilim" class="text-white text-decoration-none transition-icon" title="Profilim" style="opacity: 0.8;">
-                                    <i class="fa-solid fa-circle-user fa-2xl"></i>
-                                </a>
+                            <!-- Eklendi: list-style: none; margin: 0; padding: 0; -->
+                            <ul class="d-flex justify-content-end align-items-center gap-3 mb-0" style="list-style: none; margin: 0; padding: 0;">
 
-                                <!-- Çıkış Yap Butonu -->
-                                <a href="/Account/Logout" class="btn btn-sm btn-outline-light rounded-pill px-3 py-2 transition-icon" style="border-color: rgba(255,255,255,0.4);">
-                                    <i class="fa-solid fa-right-from-bracket me-2"></i>Çıkış Yap
-                                </a>
-                            </div>
+                                <!-- 1. BİLDİRİM ÇANI BURAYA EKLENDİ -->
+                                @await Component.InvokeAsync("NotificationBell")
+
+                                <!-- 2. Profil İkonu -->
+                                <li>
+                                    <a href="/Home/Profilim" class="text-white text-decoration-none transition-icon" title="Profilim" style="opacity: 0.8;">
+                                        <i class="fa-solid fa-circle-user fa-2xl"></i>
+                                    </a>
+                                </li>
+
+                                <!-- 3. Çıkış Yap Butonu -->
+                                <li>
+                                    <a href="/Account/Logout" class="btn btn-sm btn-outline-light rounded-pill px-3 py-2 transition-icon" style="border-color: rgba(255,255,255,0.4);">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Çıkış Yap
+                                    </a>
+                                </li>
+                            </ul>
                         }
                         else
                         {

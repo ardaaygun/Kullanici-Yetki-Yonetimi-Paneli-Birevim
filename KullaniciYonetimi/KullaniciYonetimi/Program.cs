@@ -8,7 +8,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews();//Mvc mimarisi kullanabilmek için uygulammaya eklenmelidir bu sayade uygulama mvc davranışı sergileyebilir.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -33,7 +33,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
+app.UseRouting();//gelen isteğin(request) rotası bu middleware ile berirlenir.
 app.UseAuthentication();
 app.UseAuthorization();
 

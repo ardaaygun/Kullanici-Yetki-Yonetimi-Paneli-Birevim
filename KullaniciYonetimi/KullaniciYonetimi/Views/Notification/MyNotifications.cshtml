@@ -1,0 +1,141 @@
+﻿@model List<KullaniciYonetimi.Models.UserNotification>
+
+@{
+    ViewData["Title"] = "Tüm Bildirimlerim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Tablo için şeffaf cam teması */
+    .glass-table {
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        --bs-table-border-color: rgba(255, 255, 255, 0.15);
+    }
+
+        .glass-table th, .glass-table td {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            vertical-align: middle;
+        }
+
+    /* Okunmamış satırları hafif vurgulamak için */
+    .unread-row {
+        background-color: rgba(227, 6, 19, 0.1) !important; /* Hafif kurumsal kırmızı */
+    }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 mt-4">
+
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-bell-concierge me-2"></i>Tüm Bildirimlerim
+                    </h3>
+
+                    <!-- Tümünü Okundu İşaretle Butonu -->
+                    <a href="/Notification/MarkAllAsRead" class="btn btn-sm btn-outline-light rounded-pill px-3 transition-icon" style="border-color: rgba(255,255,255,0.3);">
+                        <i class="fa-solid fa-check-double me-2"></i>Tümünü Okundu İşaretle
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table glass-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="fw-semibold">Durum</th>
+                                <th class="fw-semibold">Tarih</th>
+                                <th class="fw-semibold">Başlık</th>
+                                <th class="fw-semibold">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    // Bildirim tipine göre ikon rengi
+                                    string iconColor = item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Info ? "text-info" :
+                                                       item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Warning ? "text-warning" : "text-danger";
+
+                                    // Okunmamışsa satıra eklenecek sınıf
+                                    string rowClass = item.IsRead ? "" : "unread-row";
+
+                                    <tr class="@rowClass">
+                                        <td class="text-center" style="width: 50px;">
+                                            <i class="fa-solid fa-circle-exclamation @iconColor fs-5"></i>
+                                        </td>
+                                        <td style="white-space: nowrap; width: 150px;">
+                                            @item.Notification.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                        </td>
+                                        <td class="fw-bold">@item.Notification.Title</td>
+                                        <td>
+                                            @item.Notification.Description
+                                            @if (!item.IsRead)
+                                            {
+                                                <span class="badge bg-danger ms-2">Yeni</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-white-50 border-0">Geçmişe dönük herhangi bir bildiriminiz bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sayfalama (Pagination) Alanı -->
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <nav aria-label="Bildirim sayfaları" class="mt-4 border-top border-secondary border-opacity-25 pt-4">
+                        <ul class="pagination justify-content-center mb-0" style="gap: 5px;">
+
+                            <!-- Önceki Butonu -->
+                            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                                <a class="page-link rounded-pill text-white"
+                                   href="/Notification/MyNotifications?page=@(ViewBag.CurrentPage - 1)"
+                                   style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                    Önceki
+                                </a>
+                            </li>
+
+                            <!-- Sayfa Numaraları -->
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                bool isActive = ViewBag.CurrentPage == i;
+                                <li class="page-item @(isActive ? "active" : "")">
+                                    <a class="page-link rounded-pill"
+                                       href="/Notification/MyNotifications?page=@i"
+                                       style="background: @(isActive ? "#e30613" : "rgba(255,255,255,0.1)");
+                                        color: white;
+                                        border: 1px solid @(isActive ? "#e30613" : "rgba(255,255,255,0.2)");">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- Sonraki Butonu -->
+                            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                                <a class="page-link rounded-pill text-white"
+                                   href="/Notification/MyNotifications?page=@(ViewBag.CurrentPage + 1)"
+                                   style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                    Sonraki
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                }
+
+            </div> <!-- glass-register-card kapanışı -->
+        </div>
+    </div>
+</div> <!-- container-fluid kapanışı -->
