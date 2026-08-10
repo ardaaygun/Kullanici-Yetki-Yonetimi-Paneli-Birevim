@@ -1,0 +1,44 @@
+﻿@model KullaniciYonetimi.Models.Role
+@{
+    ViewData["Title"] = "Rol Sil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 mt-4">
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="border-color: rgba(227, 6, 19, 0.3);">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-50 pb-3">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i>Rolü Sil
+                    </h3>
+                    <a href="/Role/Index" class="btn btn-sm btn-outline-light rounded-pill px-3 transition-icon">
+                        <i class="fa-solid fa-arrow-left me-2"></i>İptal
+                    </a>
+                </div>
+
+                <div class="text-center py-4">
+                    <i class="fa-solid fa-trash-can text-danger mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="text-white">Bu rolü kalıcı olarak silmek istediğinize emin misiniz?</h5>
+                    <p class="text-white-50 mt-2">
+                        Silinecek Rol: <strong class="text-white fs-5">@Model.RoleName</strong>
+                    </p>
+                    <p class="text-danger small mt-3">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        Uyarı: Bu işlem geri alınamaz. Eğer bu role atanmış kullanıcılar veya menüler varsa sistem hata verebilir.
+                    </p>
+                </div>
+
+                <form asp-action="Delete" method="post" class="mt-4 text-center">
+                    <input type="hidden" asp-for="Id" />
+
+                    <button type="submit" class="btn fw-bold px-5 py-2 text-white" style="background-color: #e30613; border-radius: 8px;">
+                        <i class="fa-solid fa-trash me-2"></i>Evet, Kalıcı Olarak Sil
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

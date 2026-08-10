@@ -1,0 +1,107 @@
+﻿@model List<KullaniciYonetimi.Models.Menu>
+
+<style>
+    .glass-nav-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        color: rgba(255, 255, 255, 0.65);
+        text-decoration: none;
+        border-radius: 14px;
+        margin-bottom: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+        .glass-nav-link i.sidebar-icon {
+            width: 26px;
+            font-size: 1.15rem;
+            margin-right: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Üzerine gelindiğinde veya tıklandığında */
+        .glass-nav-link:hover, .glass-nav-link[aria-expanded="true"] {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+            .glass-nav-link:hover i.sidebar-icon, .glass-nav-link[aria-expanded="true"] i.sidebar-icon {
+                color: #e30613; /* Birevim Kırmızısı Efekti */
+                transform: scale(1.1);
+            }
+
+    /* Alt Menü (Submenu) Tasarımı */
+    .glass-submenu {
+        list-style: none;
+        padding: 0;
+        margin: 4px 0 12px 20px;
+        border-left: 2px solid rgba(255, 255, 255, 0.05);
+    }
+
+        .glass-submenu li a {
+            display: block;
+            padding: 10px 16px 10px 24px;
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            border-radius: 0 10px 10px 0;
+        }
+
+            .glass-submenu li a:hover {
+                color: #ffffff;
+                background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            }
+
+    /* Sağdaki Açılır Ok (Chevron) */
+    .nav-chevron {
+        margin-left: auto;
+        font-size: 0.8rem;
+        transition: transform 0.3s ease;
+    }
+
+    .glass-nav-link[aria-expanded="true"] .nav-chevron {
+        transform: rotate(-180deg);
+    }
+</style>
+
+<div class="d-flex flex-column w-100 mt-2">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var menu in Model)
+        {
+            if (menu.SubMenus != null && menu.SubMenus.Any())
+            {
+                <a class="glass-nav-link" data-bs-toggle="collapse" href="#collapse_@menu.Id" role="button" aria-expanded="false">
+                    <i class="@menu.Icon sidebar-icon"></i>
+                    <span>@menu.Title</span>
+                    <i class="fa-solid fa-chevron-down nav-chevron"></i>
+                </a>
+                <div class="collapse" id="collapse_@menu.Id">
+                    <ul class="glass-submenu">
+                        @foreach (var subMenu in menu.SubMenus)
+                        {
+                            <li>
+                                <a href="@subMenu.Url">
+                                    <i class="@subMenu.Icon me-2" style="font-size: 0.8rem;"></i>@subMenu.Title
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a href="@menu.Url" class="glass-nav-link">
+                    <i class="@menu.Icon sidebar-icon"></i>
+                    <span>@menu.Title</span>
+                </a>
+            }
+        }
+    }
+</div>

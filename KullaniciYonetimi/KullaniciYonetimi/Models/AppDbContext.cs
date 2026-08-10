@@ -15,5 +15,8 @@ namespace KullaniciYonetimi.Models
 
         public DbSet<UserNotification> UserNotifications { get; set; }
 
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<RoleMenu> RoleMenus { get; set; }
+
     }
 }

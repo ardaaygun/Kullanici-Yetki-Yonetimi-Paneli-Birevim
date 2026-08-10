@@ -3,7 +3,7 @@
 <style>
     /* Açılır Menü Cam Efekti (Projenin ana temasına uygun) */
     .glass-dropdown {
-        background: rgba(15, 15, 15, 0.85) !important; /* Okunabilirlik için saydamlık biraz daha koyu */
+        background: rgba(15, 15, 15, 0.85) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -21,47 +21,36 @@
     }
 
         .glass-notification-item:hover, .glass-notification-item:focus {
-            /* Kurumsal kırmızının (%15 saydam hali) */
             background-color: rgba(227, 6, 19, 0.15) !important;
-            /* Üstüne gelince hafif sağa kayma efekti */
             transform: translateX(4px);
         }
 
-            /* Hover durumunda Bootstrap'in yazıyı siyah yapmasını engelleyip beyaz kalmasını zorluyoruz */
             .glass-notification-item:hover strong,
             .glass-notification-item:hover small,
             .glass-notification-item:hover div {
                 color: #ffffff !important;
             }
+</style>
 
-    /* Rozet (Badge) Konumlandırması */
-    .custom-badge {
-        font-size: 0.65rem;
-        transform: translate(-30%, 10%) !important;
-    }
-</style> 
+<li class="dropdown d-flex align-items-center me-2">
 
-<li class="nav-item dropdown d-flex align-items-center">
+    <!-- İkon ve Rozet (Büyüme Efektli ve Yeni Boyutlu) -->
+    <a class="text-white text-decoration-none transition-icon position-relative d-flex align-items-center" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="opacity: 0.9;" title="Bildirimler">
 
-    <a class="nav-link text-white" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-bell fa-xl"></i>
 
-        <!-- 2. İkonu ve rozeti sıkıca bir arada tutacak kapsayıcı span -->
-        <span class="position-relative d-inline-block mt-1">
-            <i class="fa-solid fa-bell fs-5"></i>
-
-            @if (ViewBag.UnreadCount > 0)
-            {
-                <!-- Rozet artık doğrudan çanın köşesine yapışacak -->
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.35em 0.45em; border: 1px solid rgba(255,255,255,0.2);">
-                    @ViewBag.UnreadCount
-                    <span class="visually-hidden">Okunmamış bildirimler</span>
-                </span>
-            }
-        </span>
-
+        @if (ViewBag.UnreadCount > 0)
+        {
+            <!-- Rozet konumlandırması güncellendi -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark" style="font-size: 0.65rem;">
+                @ViewBag.UnreadCount
+                <span class="visually-hidden">Okunmamış bildirimler</span>
+            </span>
+        }
     </a>
 
-    <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-2" aria-labelledby="notificationDropdown">
+    <!-- Açılır Cam Penceremiz (Dropdown) -->
+    <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-3" aria-labelledby="notificationDropdown">
         <li>
             <h6 class="dropdown-header text-white fw-bold mb-2 pb-2 border-bottom border-secondary border-opacity-50">
                 <i class="fa-solid fa-bell-concierge me-2"></i>Bildirimleriniz
@@ -94,7 +83,7 @@
             <li><span class="dropdown-item text-white-50 text-center py-4 bg-transparent">Yeni bildiriminiz yok.</span></li>
         }
 
-        <!-- TÜMÜNÜ GÖR BUTONU ARTIK HER DURUMDA EN ALTTA ÇIKACAK -->
+        <!-- TÜMÜNÜ GÖR BUTONU -->
         <li>
             <hr class="dropdown-divider border-secondary border-opacity-50 my-1">
         </li>
