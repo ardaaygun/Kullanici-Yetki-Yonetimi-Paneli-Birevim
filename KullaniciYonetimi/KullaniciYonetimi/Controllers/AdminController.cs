@@ -8,7 +8,8 @@ namespace KullaniciYonetimi.Controllers
 {
     // BÜYÜK KİLİT: Bu Controller'daki HİÇBİR SAYFAYA Admin olmayan giremez!
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : Controller // request istek karşılayabilmesi için Controller sınıfndan kalıtım almalı.
+
     {
         private readonly AppDbContext _context;
 

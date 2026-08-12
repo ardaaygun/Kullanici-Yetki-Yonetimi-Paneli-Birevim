@@ -1,0 +1,39 @@
+﻿@model KullaniciYonetimi.Models.Role
+@{
+    ViewData["Title"] = "Yeni Rol Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 mt-4">
+            <div class="glass-register-card p-4 p-lg-5 w-100">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-50 pb-3">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-plus me-2"></i>Yeni Rol
+                    </h3>
+                    <a href="/Role/Index" class="btn btn-sm btn-outline-light rounded-pill px-3 transition-icon">
+                        <i class="fa-solid fa-arrow-left me-2"></i>İptal
+                    </a>
+                </div>
+
+                <form asp-action="Create" method="post">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label asp-for="RoleName" class="form-label text-white-50">Rol Adı <span class="text-danger">*</span></label>
+                            <input asp-for="RoleName" class="form-control glass-input" required placeholder="Örn: İnsan Kaynakları" />
+                        </div>
+
+                        <div class="col-12 mt-4 text-end">
+                            <button type="submit" class="btn fw-bold px-5 py-2 text-white" style="background-color: #e30613; border-radius: 8px;">
+                                <i class="fa-solid fa-save me-2"></i>Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

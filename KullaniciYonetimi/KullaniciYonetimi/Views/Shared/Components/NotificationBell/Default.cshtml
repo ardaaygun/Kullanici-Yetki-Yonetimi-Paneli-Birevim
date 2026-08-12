@@ -1,0 +1,96 @@
+﻿@model List<KullaniciYonetimi.Models.UserNotification>
+
+<style>
+    /* Açılır Menü Cam Efekti (Projenin ana temasına uygun) */
+    .glass-dropdown {
+        background: rgba(15, 15, 15, 0.85) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 15px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        padding: 0.5rem 0;
+        min-width: 320px;
+    }
+
+    /* Bildirim Elemanları ve Kırmızı Hover Efekti */
+    .glass-notification-item {
+        background-color: transparent !important;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+        .glass-notification-item:hover, .glass-notification-item:focus {
+            background-color: rgba(227, 6, 19, 0.15) !important;
+            transform: translateX(4px);
+        }
+
+            .glass-notification-item:hover strong,
+            .glass-notification-item:hover small,
+            .glass-notification-item:hover div {
+                color: #ffffff !important;
+            }
+</style>
+
+<li class="dropdown d-flex align-items-center me-2">
+
+    <!-- İkon ve Rozet (Büyüme Efektli ve Yeni Boyutlu) -->
+    <a class="text-white text-decoration-none transition-icon position-relative d-flex align-items-center" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="opacity: 0.9;" title="Bildirimler">
+
+        <i class="fa-solid fa-bell fa-xl"></i>
+
+        @if (ViewBag.UnreadCount > 0)
+        {
+            <!-- Rozet konumlandırması güncellendi -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark" style="font-size: 0.65rem;">
+                @ViewBag.UnreadCount
+                <span class="visually-hidden">Okunmamış bildirimler</span>
+            </span>
+        }
+    </a>
+
+    <!-- Açılır Cam Penceremiz (Dropdown) -->
+    <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-3" aria-labelledby="notificationDropdown">
+        <li>
+            <h6 class="dropdown-header text-white fw-bold mb-2 pb-2 border-bottom border-secondary border-opacity-50">
+                <i class="fa-solid fa-bell-concierge me-2"></i>Bildirimleriniz
+            </h6>
+        </li>
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                /* Tipe göre dinamik renk */
+                string iconColor = item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Info ? "text-info" :
+                                   item.Notification.Type == KullaniciYonetimi.Models.NotificationType.Warning ? "text-warning" : "text-danger";
+
+                <li>
+                    <a class="dropdown-item py-2 px-3 glass-notification-item text-white" href="/Notification/MarkAsRead/@item.NotificationId" style="white-space: normal;">
+                        <div class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-exclamation @iconColor mt-1 me-3 fs-5"></i>
+                            <div>
+                                <strong class="d-block mb-1 text-white">@item.Notification.Title</strong>
+                                <small class="d-block text-white-50" style="font-size: 0.85rem;">@item.Notification.Description</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li><span class="dropdown-item text-white-50 text-center py-4 bg-transparent">Yeni bildiriminiz yok.</span></li>
+        }
+
+        <!-- TÜMÜNÜ GÖR BUTONU -->
+        <li>
+            <hr class="dropdown-divider border-secondary border-opacity-50 my-1">
+        </li>
+        <li>
+            <a class="dropdown-item text-center py-2 fw-semibold" href="/Notification/MyNotifications" style="color: #e30613; background: transparent;">
+                Tümünü Gör <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </li>
+    </ul>
+</li>

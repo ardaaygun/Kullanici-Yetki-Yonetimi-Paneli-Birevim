@@ -4,6 +4,7 @@ using KullaniciYonetimi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KullaniciYonetimi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260805132638_AddTypeColumnToNotification")]
+    partial class AddTypeColumnToNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,45 +24,6 @@ namespace KullaniciYonetimi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("KullaniciYonetimi.Models.Menu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Menus");
-                });
 
             modelBuilder.Entity("KullaniciYonetimi.Models.Notification", b =>
                 {
@@ -103,27 +67,6 @@ namespace KullaniciYonetimi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("KullaniciYonetimi.Models.RoleMenu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MenuId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuId");
-
-                    b.ToTable("RoleMenus");
                 });
 
             modelBuilder.Entity("KullaniciYonetimi.Models.User", b =>
@@ -196,26 +139,6 @@ namespace KullaniciYonetimi.Migrations
                     b.ToTable("UserNotifications");
                 });
 
-            modelBuilder.Entity("KullaniciYonetimi.Models.Menu", b =>
-                {
-                    b.HasOne("KullaniciYonetimi.Models.Menu", "ParentMenu")
-                        .WithMany("SubMenus")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("ParentMenu");
-                });
-
-            modelBuilder.Entity("KullaniciYonetimi.Models.RoleMenu", b =>
-                {
-                    b.HasOne("KullaniciYonetimi.Models.Menu", "Menu")
-                        .WithMany("RoleMenus")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Menu");
-                });
-
             modelBuilder.Entity("KullaniciYonetimi.Models.User", b =>
                 {
                     b.HasOne("KullaniciYonetimi.Models.Role", "Role")
@@ -244,13 +167,6 @@ namespace KullaniciYonetimi.Migrations
                     b.Navigation("Notification");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KullaniciYonetimi.Models.Menu", b =>
-                {
-                    b.Navigation("RoleMenus");
-
-                    b.Navigation("SubMenus");
                 });
 
             modelBuilder.Entity("KullaniciYonetimi.Models.Notification", b =>

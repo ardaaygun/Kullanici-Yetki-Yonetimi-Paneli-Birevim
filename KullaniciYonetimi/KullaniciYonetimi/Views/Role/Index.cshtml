@@ -1,0 +1,80 @@
+﻿@model IEnumerable<KullaniciYonetimi.Models.Role>
+@{
+    ViewData["Title"] = "Rol Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Tablo için şeffaf cam teması */
+    .glass-table {
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        --bs-table-border-color: rgba(255, 255, 255, 0.15);
+    }
+
+        .glass-table th, .glass-table td {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            vertical-align: middle;
+        }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 mt-4">
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-user-shield me-2"></i>Rol Yönetimi
+                    </h3>
+                    <a href="/Role/Create" class="btn btn-sm btn-outline-light rounded-pill px-3 transition-icon" style="border-color: rgba(255,255,255,0.3);">
+                        <i class="fa-solid fa-plus me-2"></i>Yeni Rol Ekle
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table glass-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 80px;">ID</th>
+                                <th>Rol Adı</th>
+                                <th class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center fw-bold text-white-50">@item.Id</td>
+                                        <td class="fw-bold">@item.RoleName</td>
+                                        <td class="text-end">
+                                            <!-- Düzenle Butonu -->
+                                            <a href="/Role/Edit/@item.Id" class="btn btn-sm btn-outline-light rounded-pill px-3 me-1" title="Düzenle">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+
+                                            <!-- Sil Butonu -->
+                                            <a href="/Role/Delete/@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3" title="Sil">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-white-50 border-0">Sistemde henüz kayıtlı bir rol bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@model KullaniciYonetimi.Models.Menu
+@{
+    ViewData["Title"] = "Yeni Menü Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 mt-4">
+            <div class="glass-register-card p-4 p-lg-5 w-100">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-50 pb-3">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-folder-plus me-2"></i>Yeni Menü Ekle
+                    </h3>
+                    <a href="/Menu/Index" class="btn btn-sm btn-outline-light rounded-pill px-3 transition-icon">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Listeye Dön
+                    </a>
+                </div>
+
+                <form asp-action="Create" method="post">
+                    <div class="row g-4">
+
+                        <!-- Menü Adı -->
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label text-white-50">Menü Adı <span class="text-danger">*</span></label>
+                            <input asp-for="Title" class="form-control glass-input" required placeholder="Örn: Kullanıcı Yönetimi" />
+                        </div>
+
+                        <!-- İkon -->
+                        <div class="col-md-6">
+                            <label asp-for="Icon" class="form-label text-white-50">İkon (FontAwesome)</label>
+                            <input asp-for="Icon" class="form-control glass-input" placeholder="Örn: fa-solid fa-users" />
+                        </div>
+
+                        <!-- Bağlantı URL -->
+                        <div class="col-md-6">
+                            <label asp-for="Url" class="form-label text-white-50">Bağlantı (URL)</label>
+                            <input asp-for="Url" class="form-control glass-input" placeholder="Örn: /User/Index" />
+                        </div>
+
+                        <!-- Üst Menü Seçimi -->
+                        <div class="col-md-6">
+                            <label asp-for="ParentId" class="form-label text-white-50">Üst Menü (Varsa)</label>
+                            <select asp-for="ParentId" class="form-select glass-input" asp-items="ViewBag.ParentMenus">
+                                <option value="">-- Ana Menü Olsun --</option>
+                            </select>
+                        </div>
+
+                        <!-- Sıralama -->
+                        <div class="col-md-6">
+                            <label asp-for="Order" class="form-label text-white-50">Sıralama</label>
+                            <input asp-for="Order" type="number" class="form-control glass-input" value="0" />
+                        </div>
+
+                        <!-- Durum -->
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                                <label class="form-check-label text-white" asp-for="IsActive">Menü Aktif Olsun</label>
+                            </div>
+                        </div>
+
+                        <!-- Kaydet Butonu -->
+                        <div class="col-12 mt-4 text-end">
+                            <button type="submit" class="btn fw-bold px-5 py-2 text-white" style="background-color: #e30613; border-radius: 8px;">
+                                <i class="fa-solid fa-save me-2"></i>Kaydet
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

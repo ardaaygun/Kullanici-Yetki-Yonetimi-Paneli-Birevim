@@ -1,0 +1,131 @@
+﻿@model List<KullaniciYonetimi.Models.MenuSelection>
+@{
+    ViewData["Title"] = "Rol-Menü Yetkilendirmesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Cam temalı form elemanları */
+    .glass-list-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .glass-list-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+    .form-check-input:checked {
+        background-color: #e30613;
+        border-color: #e30613;
+    }
+
+    /* Scrollbar (Kaydırma Çubuğu) Özelleştirmesi */
+    .custom-scroll {
+        max-height: 50vh; /* Ekranın %50'si kadar yükseklik */
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 10px;
+    }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+            .custom-scroll::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.4);
+            }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <!-- 1. DEĞİŞİKLİK: Genişliği artırmak için col-lg-8'i col-lg-10 yaptık -->
+        <div class="col-12 col-lg-10 mt-4">
+
+            <!-- 2. DEĞİŞİKLİK: max-width sınırını ezdik (max-width: 100% !important;) -->
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-50 pb-3">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-user-lock me-2"></i>Yetkilendirme Paneli
+                    </h3>
+                </div>
+
+                <!-- Adım 1: Rol Seçim Formu -->
+                <form method="get" asp-action="RoleAssignment" id="roleSelectForm" class="mb-4">
+                    <label class="form-label text-white-50 fw-semibold mb-2">İşlem Yapılacak Rolü Seçin:</label>
+                    <select name="roleId" asp-items="ViewBag.Roles" class="form-select glass-input py-2" onchange="document.getElementById('roleSelectForm').submit();">
+                        <option value="">-- Rol Seçin --</option>
+                    </select>
+                </form>
+
+                <!-- Adım 2: Checkbox Formu -->
+                @if (ViewBag.SelectedRoleId != null)
+                {
+                    <form asp-action="UpdateRoleMenus" method="post">
+                        <input type="hidden" name="roleId" value="@ViewBag.SelectedRoleId" />
+
+                        <h5 class="text-white mb-3"><i class="fa-solid fa-list-check me-2"></i>Erişilebilecek Menüler</h5>
+
+                        <!-- 3. DEĞİŞİKLİK: Menülerin çok uzamasını engellemek için scroll div'i ekledik -->
+                        <div class="custom-scroll mb-4">
+                            <div class="row g-3">
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var menu in Model)
+                                    {
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="glass-list-item p-3 d-flex align-items-center">
+
+                                                <div class="form-check form-switch mb-0">
+                                                    <input class="form-check-input fs-5 mt-0" type="checkbox" name="selectedMenus" value="@menu.MenuId" id="menu_@menu.MenuId" @(menu.IsSelected ? "checked" : "")>
+                                                </div>
+
+                                                <label class="form-check-label text-white ms-3" for="menu_@menu.MenuId" style="cursor: pointer; width: 100%;">
+                                                    <strong class="d-block">@menu.Title</strong>
+                                                    @if (!string.IsNullOrEmpty(menu.ParentName))
+                                                    {
+                                                        <small class="text-white-50">Üst Menü: @menu.ParentName</small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-white-50">- Ana Menü -</small>
+                                                    }
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12 text-center text-white-50 py-3">Sistemde atanabilir aktif bir menü bulunamadı.</div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="text-end border-top border-secondary border-opacity-50 pt-4">
+                            <button type="submit" class="btn fw-bold px-5 py-2 text-white" style="background-color: #e30613; border-radius: 8px;">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>Yetkileri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
