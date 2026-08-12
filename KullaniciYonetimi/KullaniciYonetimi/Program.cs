@@ -37,7 +37,6 @@ app.UseRouting();//gelen isteğin(request) rotası bu middleware ile berirlenir.
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(
