@@ -7,8 +7,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-
-        // Hash şifreleme.
         public string PasswordHash { get; set; }
         public DateTime? LastLoginDate { get; set; }
 

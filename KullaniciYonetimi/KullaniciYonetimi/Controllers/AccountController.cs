@@ -13,30 +13,29 @@ namespace KullaniciYonetimi.Controllers
 {
     public class AccountController : Controller
     {
-        // Veritabanı köprümüzü tutacağımız gizli (private) değişken
+        
         private readonly AppDbContext _context;
 
-        // 1. BAĞIMLILIK ENJEKSİYONU (Dependency Injection)
-        // Controller ilk çalıştığında, Program.cs içindeki alet çantasından AppDbContext'i ister
+        // (Dependency Injection)
+        
         public AccountController(AppDbContext context)
         {
             _context = context; // Gelen köprüyü, kendi değişkenimize eşitliyoruz ki içeride kullanabilelim
         }
 
-        // 2. GET: Arayüzü Ekrana Getirme İşlemi
-        // Kullanıcı tarayıcıya "/Account/Register" yazdığında sadece boş formu görmek ister.
+        
         [HttpGet]
         public IActionResult Register()
         {
             return View(); 
         }
 
-        // 3. POST: Formdan Gelen Veriyi Yakalama ve Kaydetme İşlemi
-        // Kullanıcı "Kayıt Ol" butonuna bastığında veriler buraya düşer.
+       
+        
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
-            // ModelState.IsValid: Daha önce ViewModel'e yazdığımız [Required], [EmailAddress] kurallarına uyulmuş mu?
+            
             if (ModelState.IsValid)
             {// KURAL 1: Birevim şirket maili zorunluluğu!
                 // (OrdinalIgnoreCase: Kullanıcı @BIREVIM.COM.TR yazsa bile büyük/küçük harf takıntısı yapmadan kabul eder)
@@ -64,11 +63,10 @@ namespace KullaniciYonetimi.Controllers
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
 
-                    // ŞİFRELEME: Şifreler veritabanına asla "123456" gibi düz yazılmaz!
+                    // hash şifreleme
                     PasswordHash = BasitSifrelemeYap(model.Password),
 
-                    // İlişki gereği zorunlu: Şimdilik manuel olarak bir Rol ID atıyoruz 
-                    // (Gerçek senaryoda bu rolu veritabanından dinamik çekeriz)
+                    
                     RoleId = 1
                 };
 
@@ -87,7 +85,7 @@ namespace KullaniciYonetimi.Controllers
         // Geçici bir şifre şifreleme algoritması (Hashleme)
         private string BasitSifrelemeYap(string plainText)
         {
-            // Gelen düz metni anlaşılmaz bir formata (Base64) çevirir. 
+            // Gelen düz metni (Base64) formatına çevirir. 
             
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
@@ -96,20 +94,20 @@ namespace KullaniciYonetimi.Controllers
 
 
 
-        // GET: Sadece Login formunu ekrana getirir
+        
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Kullanıcı e-posta ve şifresini gönderdiğinde çalışır
+        
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // 1. ADIM: Veritabanında bu e-postaya sahip bir kullanıcı var mı?
+                
                 var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
 
                 if (user != null)
@@ -120,7 +118,7 @@ namespace KullaniciYonetimi.Controllers
 
                     if (user.PasswordHash == hashedGirisSifresi)
                     {
-                        // 1. YENİ EKLENEN KOD: Kullanıcının RoleId'sine bakarak Roles tablosundan rolün adını çekiyoruz
+                        // 1. Kullanıcının RoleId'sine bakarak Roles tablosundan rolün adını çekiyoruz
                         var userRole = _context.Roles.FirstOrDefault(r => r.Id == user.RoleId);
 
                         // Eğer bir terslik olur da rol bulunamazsa, güvenlik amacıyla varsayılan olarak "Standart" atıyoruz
@@ -133,7 +131,7 @@ namespace KullaniciYonetimi.Controllers
                             new Claim(ClaimTypes.Name, user.FirstName),
                             new Claim(ClaimTypes.Email, user.Email),                  
                             
-                            // 3. GÜNCELLEME: "Admin" yazısını sildik, veritabanından gelen dinamik roleName değişkenini koyduk!
+                            
                             new Claim(ClaimTypes.Role, roleName)
                         };
 
@@ -146,15 +144,15 @@ namespace KullaniciYonetimi.Controllers
                             authProperties);
 
                         // --- ROL ID BAZLI YÖNLENDİRME MANTIĞI ---
-                        if (user.RoleId == 3) // Varsayalım ki 3 numaralı ID "Admin" rolüne ait
+                        if (user.RoleId == 3) // admin 
                         {
                             return RedirectToAction("Index", "Admin");
                         }
-                        else if (user.RoleId == 2) // 2 numaralı ID "Yönetici" rolüne ait
+                        else if (user.RoleId == 2) // (yönetici)
                         {
                             return RedirectToAction("Dashboard", "Home");
                         }
-                        else // Diğer standart kullanıcılar (Örn: RoleId == 1)
+                        else // ( RoleId == 1)
                         {
                             return RedirectToAction("Dashboard", "Home");
                         }
@@ -168,13 +166,13 @@ namespace KullaniciYonetimi.Controllers
             return View(model);
         }
 
-        // Çıkış yapma işlemi
+        
         public async Task<IActionResult> Logout()
         {
-            // Tarayıcıdaki çerezi (yaka kartını) siliyoruz
+            // Tarayıcıdaki cookie siliyoruz . 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Çıkış yaptıktan sonra kullanıcıyı Login sayfasına yönlendiriyoruz
+            
             return RedirectToAction("Login", "Account");
         }
     }

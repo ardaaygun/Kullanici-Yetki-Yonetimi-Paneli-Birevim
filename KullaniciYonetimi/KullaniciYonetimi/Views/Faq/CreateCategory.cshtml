@@ -1,0 +1,75 @@
+﻿@model KullaniciYonetimi.Models.FaqCategory
+
+@{
+    ViewData["Title"] = "Yeni Kategori Ekle";
+}
+
+<style>
+    /* Şeffaf form elemanları için özel CSS */
+    .glass-input {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+
+        .glass-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+            border-color: white !important;
+        }
+
+    .glass-check-input {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+        .glass-check-input:checked {
+            background-color: #198754; /* Bootstrap success rengi */
+            border-color: #198754;
+        }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 mt-4">
+
+            <div class="glass-register-card p-4 p-lg-5 w-100">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-folder-plus me-2"></i>Yeni Kategori
+                    </h4>
+                    <a href="/Faq/Index" class="btn btn-sm btn-outline-light transition-icon">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Listeye Dön
+                    </a>
+                </div>
+
+                <!-- KATEGORİ EKLEME FORMU -->
+                <form asp-controller="Faq" asp-action="CreateCategory" method="post">
+
+                    <div class="mb-4">
+                        <label class="form-label text-white-50">Kategori Adı</label>
+                        <!-- asp-for="CategoryName" ile input'u doğrudan modeldeki alana bağlıyoruz -->
+                        <input type="text" asp-for="CategoryName" class="form-control glass-input" placeholder="Örn: Prim Sistemi" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <!-- Switch mantığı ile Aktif/Pasif durumunu alıyoruz -->
+                            <input class="form-check-input glass-check-input" type="checkbox" role="switch" asp-for="IsActive" checked>
+                            <label class="form-check-label text-white ms-2" for="IsActive">Kategori Aktif Olsun</label>
+                        </div>
+                        <small class="text-white-50" style="font-size: 0.8rem;">Pasif yapılan kategoriler, kullanıcıların arayüzünde görünmez.</small>
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-light fw-bold py-2">
+                            <i class="fa-solid fa-check me-2"></i>Kategoriyi Kaydet
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
