@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace KullaniciYonetimi.Controllers
 {
-    // BÜYÜK KİLİT: Bu Controller'daki HİÇBİR SAYFAYA Admin olmayan giremez!
+    // Authorize kimlik doğrulama ile erişim kısıtlandı.
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller // request istek karşılayabilmesi için Controller sınıfndan kalıtım almalı.
+    public class AdminController : Controller 
 
     {
         private readonly AppDbContext _context;
@@ -21,7 +21,7 @@ namespace KullaniciYonetimi.Controllers
         // GET: Tüm Kullanıcıları Listeleme Sayfası
         public IActionResult Index()
         {
-            // Veritabanındaki kullanıcıları alıp, arayüze göndereceğimiz ViewModel'e (Kuryeye) çeviriyoruz
+            // Veritabanındaki kullanıcıları alıp, arayüze göndereceğimiz ViewModel'e  çeviriyoruz
             var kullaniciListesi = _context.Users.Select(u => new UserViewModel
             {
                 Id = u.Id,
@@ -50,12 +50,12 @@ namespace KullaniciYonetimi.Controllers
                 _context.SaveChanges();
             }
 
-            // İşlem bittikten sonra sayfayı yenilemek için Index (Kullanıcı Listesi) sayfasına geri yönlendir
+            
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Güvenlik: Sadece adminler silebilir
+        [Authorize(Roles = "Admin")] 
         public IActionResult DeleteUser(int id)
         {
             var user = _context.Users.Find(id);
@@ -65,7 +65,7 @@ namespace KullaniciYonetimi.Controllers
                 _context.SaveChanges();
             }
 
-            // Sildikten sonra listeye geri dön
+           
             return RedirectToAction("Index");
         }
     }

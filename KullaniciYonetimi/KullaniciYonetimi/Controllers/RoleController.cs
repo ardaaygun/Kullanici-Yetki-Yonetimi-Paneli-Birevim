@@ -5,7 +5,7 @@ using KullaniciYonetimi.Models;
 
 namespace KullaniciYonetimi.Controllers
 {
-    [Authorize(Roles = "Admin,3")] // Sadece Admin yetkisi olanlar erişebilsin
+    [Authorize(Roles = "Admin,3")] 
     public class RoleController : Controller
     {
         private readonly AppDbContext _context;
@@ -35,7 +35,7 @@ namespace KullaniciYonetimi.Controllers
         {
             // İlgili navigation property'leri (varsa) yoksayalım
             ModelState.Remove("RoleMenus");
-            ModelState.Remove("Users"); // Eğer Role ile User arasında bağlantı kurduysan
+            ModelState.Remove("Users"); 
 
             if (ModelState.IsValid)
             {

@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-// Kendi projendeki namespace'leri buraya eklemeyi unutma (Models, Data vb.)
+
 
 public class NotificationController : Controller
 {
     private readonly AppDbContext _context;
 
-    // Dependency Injection ile veritabanı bağlantımızı alıyoruz
+    // Dependency Injection ile veritabanı bağlantımız
     public NotificationController(AppDbContext context)
     {
         _context = context;
@@ -18,7 +18,7 @@ public class NotificationController : Controller
 
     // 1. Admin'in Yeni Bildirim Gönderme Sayfası (GET)
     [HttpGet]
-    [Authorize(Roles = "Admin")] // Güvenlik testimizi hatırlayarak yetkiyi ekliyoruz!
+    [Authorize(Roles = "Admin")] 
     public IActionResult Create()
     {
         return View();
@@ -27,10 +27,10 @@ public class NotificationController : Controller
     // 2. Formdan Gelen Veriyi İşleme (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
-     [Authorize(Roles = "Admin")]   // CSRF korumasını eklemeyi unutmuyoruz!
+     [Authorize(Roles = "Admin")]   
     public async Task<IActionResult> Create(string title, string description, NotificationType type, string targetAudience)
     {
-        // 1. Adım: Ana bildirimi oluştur ve kaydet
+        //  Ana bildirimi oluştur ve kaydet
         var newNotification = new Notification
         {
             Title = title,
@@ -42,8 +42,8 @@ public class NotificationController : Controller
         _context.Notifications.Add(newNotification);
         await _context.SaveChangesAsync(); // Bildirim ID'sini alabilmek için önce kaydediyoruz
 
-        // 2. Adım: Bu bildirimi kimlere göndereceğiz?
-        var usersToNotify = new List<User>(); // Senin sistemindeki Kullanıcı modelinin adı neyse (AppUser, User vb.) onu yazmalısın.
+        // Bu bildirimi kimlere göndereceğiz?
+        var usersToNotify = new List<User>(); 
 
         if (targetAudience == "All")
         {
@@ -52,7 +52,7 @@ public class NotificationController : Controller
         }
         else
         {
-            // İleride buraya "Sadece Standart Kullanıcılar" veya "Belirli Bir Rol" için filtreleme ekleyeceğiz.
+            // filtreleme eklenebilri
         }
 
         // 3. Adım: Her bir kullanıcı için UserNotification köprü tablosuna kayıt at
@@ -60,7 +60,7 @@ public class NotificationController : Controller
         {
             var userNotification = new UserNotification
             {
-                NotificationId = newNotification.Id, // Az önce kaydettiğimiz bildirimin ID'si
+                NotificationId = newNotification.Id, 
                 UserId = user.Id,
                 IsRead = false
             };
@@ -69,7 +69,7 @@ public class NotificationController : Controller
 
         await _context.SaveChangesAsync();
 
-        // İşlem bitince liste sayfasına yönlendir (Henüz listeyi yapmadık ama şimdilik Index yazalım)
+        
         return RedirectToAction("Index", "Home");
     }
 
@@ -80,7 +80,7 @@ public class NotificationController : Controller
 
         if (string.IsNullOrEmpty(userIdString))
         {
-            return RedirectToAction("Login", "Account"); // Güvenlik önlemi
+            return RedirectToAction("Login", "Account"); 
         }
 
         int userId = int.Parse(userIdString);
@@ -93,7 +93,7 @@ public class NotificationController : Controller
         if (userNotification != null && !userNotification.IsRead)
         {
             userNotification.IsRead = true;
-            await _context.SaveChangesAsync(); // Değişikliği veritabanına kaydet
+            await _context.SaveChangesAsync(); 
         }
 
         // 4. Kullanıcıyı bulunduğu sayfaya geri gönderiyoruz ki sayfa yenilensin ve rozet güncellensin
@@ -102,7 +102,7 @@ public class NotificationController : Controller
     }
 
 
-    public async Task<IActionResult> MyNotifications(int page = 1) // Parametre olarak sayfa numarasını alıyoruz
+    public async Task<IActionResult> MyNotifications(int page = 1) 
     {
         var userIdString = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -119,7 +119,7 @@ public class NotificationController : Controller
             .Where(un => un.UserId == userId)
             .CountAsync();
 
-        // 2. Toplam sayfa sayısını hesaplıyoruz (Örn: 23 bildirim / 10 = 3 sayfa)
+        // 2. Toplam sayfa sayısını hesaplıyoruz 
         var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
         // 3. İlgili sayfanın verilerini çekiyoruz (Skip ve Take sihirli kelimelerimiz)
@@ -167,7 +167,7 @@ public class NotificationController : Controller
             await _context.SaveChangesAsync();
         }
 
-        // İşlem bitince kullanıcıyı tekrar bildirimlerim sayfasına yönlendiriyoruz
+        
         return RedirectToAction("MyNotifications");
     }
 }

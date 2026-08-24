@@ -6,7 +6,7 @@ using KullaniciYonetimi.Models;
 
 namespace KullaniciYonetimi.Controllers
 {
-    [Authorize(Roles = "Admin")] // Bu sayfalara sadece Admin girebilsin
+    [Authorize(Roles = "Admin")] 
     public class MenuController : Controller
     {
         private readonly AppDbContext _context;
@@ -29,7 +29,7 @@ namespace KullaniciYonetimi.Controllers
             return View(menus);
         }
 
-        // 2. Yeni Menü Ekleme Sayfası (GET - Formu Gösterir)
+        // Yeni Menü Ekleme 
         public async Task<IActionResult> Create()
         {
             // Eğer eklenecek menü bir "Alt Menü" olacaksa, adminin seçebilmesi için mevcut ana menüleri View'a gönderiyoruz
@@ -39,7 +39,7 @@ namespace KullaniciYonetimi.Controllers
             return View();
         }
 
-        // 3. Yeni Menü Ekleme İşlemi (POST - Veriyi Veritabanına Kaydeder)
+        // Yeni Menü Ekleme İşlemi 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Menu menu)
@@ -64,7 +64,7 @@ namespace KullaniciYonetimi.Controllers
             return View(menu);
         }
 
-        // 4. Menü Güncelleme Sayfası (GET - Formu Dolu Getirir)
+        // 4. Menü Güncelleme Sayfası 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +85,7 @@ namespace KullaniciYonetimi.Controllers
             return View(menu);
         }
 
-        // 5. Menü Güncelleme İşlemi (POST - Değişiklikleri Kaydeder)
+        // Menü Güncelleme İşlemi 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Menu menu)
@@ -95,7 +95,7 @@ namespace KullaniciYonetimi.Controllers
                 return NotFound();
             }
 
-            // Model doğrulamasına takılmaması için Create'de yaptığımız gibi ilişkisel özellikleri yoksayıyoruz
+            // Model doğrulamasına takılmaması için ilişkisel özellikleri yoksayıyoruz
             ModelState.Remove("ParentMenu");
             ModelState.Remove("SubMenus");
             ModelState.Remove("RoleMenus");
@@ -123,7 +123,7 @@ namespace KullaniciYonetimi.Controllers
             return View(menu);
         }
 
-        // 6. Rollere Menü Atama Sayfası (GET - Rol seçildiğinde menüleri listeler)
+        // 6. Rollere Menü Atama Sayfası 
         public async Task<IActionResult> RoleAssignment(int? roleId)
         {
             // Sistemdeki tüm rolleri dropdown için çekiyoruz
@@ -155,7 +155,7 @@ namespace KullaniciYonetimi.Controllers
                         MenuId = menu.Id,
                         Title = menu.Title,
                         ParentName = menu.ParentMenu?.Title,
-                        IsSelected = roleMenus.Contains(menu.Id) // Eğer atanmışsa Checkbox işaretli gelecek
+                        IsSelected = roleMenus.Contains(menu.Id) 
                     });
                 }
             }
@@ -164,7 +164,7 @@ namespace KullaniciYonetimi.Controllers
             return View(model);
         }
 
-        // 7. Rollere Menü Atama İşlemi (POST - Checkbox'ları kaydeder)
+        // Rollere Menü Atama İşlemi 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateRoleMenus(int roleId, List<int> selectedMenus)

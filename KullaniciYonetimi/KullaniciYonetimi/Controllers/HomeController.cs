@@ -7,8 +7,7 @@ namespace KullaniciYonetimi.Controllers
 {
     public class HomeController : Controller
     {
-        // 1. ANA SAYFA (Akýllý Yönlendirme)
-        // Siteye ilk girildiðinde veya logoya týklandýðýnda çalýþýr.
+
         public IActionResult Index()
         {
             // Kullanýcý sisteme giriþ yapmýþ mý?
@@ -20,22 +19,22 @@ namespace KullaniciYonetimi.Controllers
                     return RedirectToAction("Index", "Admin");
                 }
 
-                // Normal kullanýcý veya yöneticiyse Dashboard'a (veya Profilim'e) at
+                
                 return RedirectToAction("Dashboard", "Home");
             }
 
-            // Giriþ yapmamýþ ziyaretçiler için o þeffaf cam efektli "Kayýt Ol" formunu (Index.cshtml) göster
+            
             return View();
         }
 
-        // 2. YENÝ EKLENEN DASHBOARD (Sadece Giriþ Yapanlar)
+        // DASHBOARD 
         [Authorize]
         public IActionResult Dashboard()
         {
             return View();
         }
 
-        // 3. PROFIL SAYFASI (Sadece Giriþ Yapanlar)
+        // 3. PROFIL SAYFASI 
         [Authorize]
         public IActionResult Profilim()
         {

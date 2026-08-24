@@ -1,0 +1,108 @@
+﻿@model IEnumerable<KullaniciYonetimi.Models.FaqCategory>
+
+@{
+    ViewData["Title"] = "Bilgi Merkezi - Kategori Yönetimi";
+}
+
+<style>
+    /* Tablonun arka planını şeffaf, yazılarını beyaz yapan özel Bootstrap ezici sınıfımız */
+    .glass-table {
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        --bs-table-border-color: rgba(255, 255, 255, 0.15);
+    }
+
+        .glass-table th,
+        .glass-table td {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            vertical-align: middle;
+        }
+</style>
+
+<div class="container-fluid px-4 px-md-5 my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 mt-4">
+
+            <div class="glass-register-card p-4 p-lg-5 w-100" style="max-width: 100% !important;">
+
+                <!-- Başlık ve Yeni Ekle Butonu -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-white mb-0">
+                        <i class="fa-solid fa-layer-group me-2"></i>Kategori Yönetimi
+                    </h3>
+
+                    <!-- Yeni Kategori Ekleme Butonu -->
+                    <a href="/Faq/CreateCategory" class="btn btn-outline-light transition-icon">
+                        <i class="fa-solid fa-plus me-1"></i> Yeni Kategori
+                    </a>
+                </div>
+
+                <!-- Şeffaf Cam Efektli Tablo -->
+                <div class="table-responsive">
+                    <table class="table glass-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="fw-semibold">Kategori Adı</th>
+                                <th class="fw-semibold text-center">Durum</th>
+                                <th class="text-end fw-semibold">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var category in Model)
+                                {
+                                    <tr>
+                                        <td>@category.CategoryName</td>
+                                        <td class="text-center">
+                                            <!-- Aktif/Pasif Durum Kontrolü -->
+                                            @if (category.IsActive)
+                                            {
+                                                <span class="badge bg-success bg-opacity-75 border border-light border-opacity-25 py-2 px-3 fw-normal">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger bg-opacity-75 border border-light border-opacity-25 py-2 px-3 fw-normal">Pasif</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-flex justify-content-end align-items-center gap-2">
+
+                                                <!-- Bu Kategoriye Ait Soruları Görme Butonu -->
+                                                <a href="/Faq/Questions?categoryId=@category.Id" class="btn btn-sm btn-outline-info transition-icon" title="Soruları Gör">
+                                                    <i class="fa-solid fa-list"></i>
+                                                </a>
+
+                                                <!-- Kategori Düzenle Butonu -->
+                                                <a href="/Faq/EditCategory/@category.Id" class="btn btn-sm btn-outline-warning transition-icon" title="Düzenle">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+
+                                                <!-- Kategori Sil Formu -->
+                                                <form action="/Faq/DeleteCategory" method="post" class="m-0" onsubmit="return confirm('@category.CategoryName kategorisini silmek istediğinize emin misiniz?');">
+                                                    <input type="hidden" name="id" value="@category.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger transition-icon" title="Kategoriyi Sil">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-white-50 border-0">Henüz kategori eklenmemiş veya aktif kategori bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
